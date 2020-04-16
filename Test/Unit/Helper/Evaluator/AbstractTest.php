@@ -3,12 +3,12 @@
  * Copyright © 2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Test\Unit\Helper\Evaluator;
+namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator;
 
-use Owebia\AdvancedSettingCore\Helper\Config;
-use Owebia\AdvancedSettingCore\Helper\Evaluator;
-use Owebia\AdvancedSettingCore\Helper\Registry;
-use Owebia\AdvancedSettingCore\Model\CallbackHandler;
+use Owebia\SharedPhpConfig\Helper\Config;
+use Owebia\SharedPhpConfig\Helper\Evaluator;
+use Owebia\SharedPhpConfig\Helper\Registry;
+use Owebia\SharedPhpConfig\Model\CallbackHandler;
 
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,17 +23,17 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     protected $config = '';
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Helper\Config
+     * @var \Owebia\SharedPhpConfig\Helper\Config
      */
     protected $configHelper;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Helper\Registry
+     * @var \Owebia\SharedPhpConfig\Helper\Registry
      */
     protected $registry;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Model\CallbackHandler
+     * @var \Owebia\SharedPhpConfig\Model\CallbackHandler
      */
     protected $callbackHandler;
 

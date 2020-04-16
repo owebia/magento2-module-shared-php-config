@@ -3,7 +3,7 @@
  * Copyright © 2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Test\Unit\Helper\Evaluator;
+namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator;
 
 class ForeachTest extends AbstractTest
 {

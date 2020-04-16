@@ -1,10 +1,10 @@
 <?php
 /**
- * Copyright © 2016-2018 Owebia. All rights reserved.
+ * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\AdvancedSettingCore\Controller\Adminhtml\Debug;
+namespace Owebia\SharedPhpConfig\Controller\Adminhtml\Debug;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;

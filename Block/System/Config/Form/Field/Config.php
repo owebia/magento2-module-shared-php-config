@@ -1,10 +1,10 @@
 <?php
 /**
- * Copyright © 2016-2017 Owebia. All rights reserved.
+ * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\AdvancedSettingCore\Block\System\Config\Form\Field;
+namespace Owebia\SharedPhpConfig\Block\System\Config\Form\Field;
 
 abstract class Config extends AbstractField
 {

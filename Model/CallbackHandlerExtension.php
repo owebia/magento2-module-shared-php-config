@@ -3,12 +3,12 @@
  * Copyright © 2019-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model;
+namespace Owebia\SharedPhpConfig\Model;
 
 class CallbackHandlerExtension implements CallbackHandlerExtensionInterface
 {
     /**
-     * @var \Owebia\AdvancedSettingCore\Model\CallbackHandler
+     * @var \Owebia\SharedPhpConfig\Model\CallbackHandler
      */
     protected $callbackHandler;
 
@@ -28,7 +28,7 @@ class CallbackHandlerExtension implements CallbackHandlerExtensionInterface
     }
 
     /**
-     * @param \Owebia\AdvancedSettingCore\Model\CallbackHandler $callbackHandler
+     * @param \Owebia\SharedPhpConfig\Model\CallbackHandler $callbackHandler
      * @return $this
      */
     public function setCallbackHandler($callbackHandler)
@@ -38,7 +38,7 @@ class CallbackHandlerExtension implements CallbackHandlerExtensionInterface
     }
 
     /**
-     * @return \Owebia\AdvancedSettingCore\Helper\Registry
+     * @return \Owebia\SharedPhpConfig\Helper\Registry
      */
     public function getRegistry()
     {

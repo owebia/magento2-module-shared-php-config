@@ -1,9 +1,9 @@
 <?php
 /**
- * Copyright © 2016-2017 Owebia. All rights reserved.
+ * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
 {
@@ -48,7 +48,7 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
 
     /**
      * {@inheritDoc}
-     * @see \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper::loadData()
+     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
      */
     protected function loadData($key)
     {

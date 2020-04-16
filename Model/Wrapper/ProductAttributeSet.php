@@ -3,7 +3,7 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 class ProductAttributeSet extends SourceWrapper
 {
@@ -17,7 +17,7 @@ class ProductAttributeSet extends SourceWrapper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRespository
      * @param mixed $data
      */
@@ -25,7 +25,7 @@ class ProductAttributeSet extends SourceWrapper
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRespository,
         $data = null
     ) {

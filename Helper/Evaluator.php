@@ -3,7 +3,7 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Helper;
+namespace Owebia\SharedPhpConfig\Helper;
 
 use PhpParser\Node;
 
@@ -91,12 +91,12 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     ];
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Helper\Registry
+     * @var \Owebia\SharedPhpConfig\Helper\Registry
      */
     protected $registry = null;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Model\CallbackHandler
+     * @var \Owebia\SharedPhpConfig\Model\CallbackHandler
      */
     protected $callbackHandler = null;
 
@@ -246,7 +246,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
                 return rtrim($this->getPrettyPrinter()->prettyPrint([
                     $value
                 ]), ';');
-            } elseif ($value instanceof \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper) {
+            } elseif ($value instanceof \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper) {
                 return (string) $value;
             } else {
                 return "/** @var " . get_class($value) . " \$obj */ \$obj";
@@ -289,20 +289,20 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
-     * @return \Owebia\AdvancedSettingCore\Helper\Evaluator
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
+     * @return \Owebia\SharedPhpConfig\Helper\Evaluator
      */
-    public function setRegistry(\Owebia\AdvancedSettingCore\Helper\Registry $registry)
+    public function setRegistry(\Owebia\SharedPhpConfig\Helper\Registry $registry)
     {
         $this->registry = $registry;
         return $this;
     }
 
     /**
-     * @param \Owebia\AdvancedSettingCore\Model\CallbackHandler $callbackHandler
-     * @return \Owebia\AdvancedSettingCore\Helper\Evaluator
+     * @param \Owebia\SharedPhpConfig\Model\CallbackHandler $callbackHandler
+     * @return \Owebia\SharedPhpConfig\Helper\Evaluator
      */
-    public function setCallbackManager(\Owebia\AdvancedSettingCore\Model\CallbackHandler $callbackHandler)
+    public function setCallbackManager(\Owebia\SharedPhpConfig\Model\CallbackHandler $callbackHandler)
     {
         $this->callbackHandler = $callbackHandler;
         return $this;
@@ -881,7 +881,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         }
         if (is_object($variable) && isset($variable->{$methodName}) && is_callable($variable->{$methodName})) {
             $method = $variable->{$methodName};
-        } elseif ($variable instanceof \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper && is_callable([
+        } elseif ($variable instanceof \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper && is_callable([
             $variable,
             $methodName
         ])) {
@@ -889,7 +889,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
                 $variable,
                 $methodName
             ];
-        } elseif ($variable instanceof \Owebia\AdvancedSettingCore\Model\Wrapper\SourceWrapper && is_callable([
+        } elseif ($variable instanceof \Owebia\SharedPhpConfig\Model\Wrapper\SourceWrapper && is_callable([
             $variable->getSource(),
             $methodName
         ])) {
@@ -934,7 +934,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         if (is_array($variable) && isset($variable[$propertyName])) {
             return $this->debug($expr, $variable[$propertyName]);
         } elseif (is_object($variable)
-            && $variable instanceof \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper
+            && $variable instanceof \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper
         ) {
             return $this->debug($expr, $variable->$propertyName);
         } elseif (is_object($variable) && isset($variable->{$propertyName})) {

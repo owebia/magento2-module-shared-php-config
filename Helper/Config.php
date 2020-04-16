@@ -3,7 +3,7 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Helper;
+namespace Owebia\SharedPhpConfig\Helper;
 
 use PhpParser\ParserFactory;
 use PhpParser\Node\Stmt\Nop;
@@ -27,31 +27,31 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     protected $escaper;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Helper\Evaluator
+     * @var \Owebia\SharedPhpConfig\Helper\Evaluator
      */
     protected $evaluator;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Logger\Logger
+     * @var \Owebia\SharedPhpConfig\Logger\Logger
      */
     protected $debugLogger;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Helper\Registry
+     * @var \Owebia\SharedPhpConfig\Helper\Registry
      */
     protected $registry;
 
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\AdvancedSettingCore\Helper\Evaluator $evaluator
-     * @param \Owebia\AdvancedSettingCore\Logger\Logger $debugLogger
+     * @param \Owebia\SharedPhpConfig\Helper\Evaluator $evaluator
+     * @param \Owebia\SharedPhpConfig\Logger\Logger $debugLogger
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\Escaper $escaper,
-        \Owebia\AdvancedSettingCore\Helper\Evaluator $evaluator,
-        \Owebia\AdvancedSettingCore\Logger\Logger $debugLogger
+        \Owebia\SharedPhpConfig\Helper\Evaluator $evaluator,
+        \Owebia\SharedPhpConfig\Logger\Logger $debugLogger
     ) {
         parent::__construct($context);
         $this->escaper = $escaper;
@@ -61,14 +61,14 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param string $configuration
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param object $callbackManager
      * @param boolean $debug
      * @return Config
      */
     public function parse(
         $configuration,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         $callbackManager,
         $debug = false
     ) {

@@ -1,9 +1,9 @@
 <?php
 /**
- * Copyright © 2019 Owebia. All rights reserved.
+ * Copyright © 2019-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model;
+namespace Owebia\SharedPhpConfig\Model;
 
 interface CallbackHandlerExtensionInterface
 {
@@ -15,7 +15,7 @@ interface CallbackHandlerExtensionInterface
     public function __call($method, $arguments);
 
     /**
-     * @param \Owebia\AdvancedSettingCore\Model\CallbackHandler $callbackHandler
+     * @param \Owebia\SharedPhpConfig\Model\CallbackHandler $callbackHandler
      * @return $this
      */
     public function setCallbackHandler($callbackHandler);

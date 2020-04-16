@@ -3,7 +3,7 @@
  * Copyright © 2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Test\Unit\Helper\Evaluator\Operators;
+namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
 
 /**
  * Test Bitwise Operators

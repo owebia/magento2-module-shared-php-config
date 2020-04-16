@@ -3,7 +3,7 @@
  * Copyright © 2019-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 class App extends ArrayWrapper
 {
@@ -23,7 +23,7 @@ class App extends ArrayWrapper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param \Magento\Framework\App\State $appState
      * @param mixed $data
      */
@@ -31,7 +31,7 @@ class App extends ArrayWrapper
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         \Magento\Framework\App\State $appState,
         $data = []
     ) {

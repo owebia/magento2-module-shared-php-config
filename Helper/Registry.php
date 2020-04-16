@@ -3,15 +3,15 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Helper;
+namespace Owebia\SharedPhpConfig\Helper;
 
-use Owebia\AdvancedSettingCore\Model\Wrapper;
+use Owebia\SharedPhpConfig\Model\Wrapper;
 
 class Registry extends \Magento\Framework\App\Helper\AbstractHelper
 {
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Model\WrapperFactory
+     * @var \Owebia\SharedPhpConfig\Model\WrapperFactory
      */
     protected $wrapperFactory;
 
@@ -32,18 +32,18 @@ class Registry extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      *
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Owebia\AdvancedSettingCore\Model\WrapperFactory $wrapperFactory
+     * @param \Owebia\SharedPhpConfig\Model\WrapperFactory $wrapperFactory
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Owebia\AdvancedSettingCore\Model\WrapperFactory $wrapperFactory
+        \Owebia\SharedPhpConfig\Model\WrapperFactory $wrapperFactory
     ) {
         $this->wrapperFactory = $wrapperFactory;
         parent::__construct($context);
     }
 
     /**
-     * @return \Owebia\AdvancedSettingCore\Helper\Registry
+     * @return \Owebia\SharedPhpConfig\Helper\Registry
      */
     public function init(\Magento\Framework\DataObject $request)
     {
@@ -84,7 +84,7 @@ class Registry extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param string $className
      * @param array $arguments
-     * @return \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper
+     * @return \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper
      */
     public function create($className, array $arguments = [])
     {

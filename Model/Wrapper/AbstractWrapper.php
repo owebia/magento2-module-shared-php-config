@@ -3,9 +3,9 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
-use Owebia\AdvancedSettingCore\Model\Wrapper;
+use Owebia\SharedPhpConfig\Model\Wrapper;
 
 abstract class AbstractWrapper
 {
@@ -46,7 +46,7 @@ abstract class AbstractWrapper
     protected $escaper;
 
     /**
-     * @var \Owebia\AdvancedSettingCore\Helper\Registry
+     * @var \Owebia\SharedPhpConfig\Helper\Registry
      */
     protected $registry;
 
@@ -54,21 +54,21 @@ abstract class AbstractWrapper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param mixed $data
      */
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         $data = null
     ) {
         $this->objectManager = $objectManager;
         $this->backendAuthSession = $backendAuthSession;
         $this->escaper = $escaper;
         $this->registry = $registry;
-        $this->logger = $this->objectManager->get(\Owebia\AdvancedSettingCore\Logger\Logger::class);
+        $this->logger = $this->objectManager->get(\Owebia\SharedPhpConfig\Logger\Logger::class);
         $this->data = $data;
         $this->cache = $objectManager->create(\Magento\Framework\DataObject::class);
     }
@@ -128,7 +128,7 @@ abstract class AbstractWrapper
     /**
      * @param mixed $data
      * @param string $className
-     * @return \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper
+     * @return \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper
      */
     protected function createWrapper($data, $className = null)
     {

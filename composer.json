@@ -1,5 +1,5 @@
 {
-    "name": "owebia/magento2-module-advanced-setting-core",
+    "name": "owebia/magento2-module-shared-php-config",
     "description": "N/A",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0|~7.1.0|~7.2.0|~7.3.0",
@@ -17,7 +17,7 @@
         "nikic/php-parser": "^3.1.0|^4.0.0"
     },
     "type": "magento2-module",
-    "version": "2.8.0",
+    "version": "3.0.0",
     "license": [
         "proprietary"
     ],
@@ -26,7 +26,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "Owebia\\AdvancedSettingCore\\": ""
+            "Owebia\\SharedPhpConfig\\": ""
         }
     }
 }

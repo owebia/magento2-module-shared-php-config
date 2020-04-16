@@ -3,7 +3,7 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 class Info extends ArrayWrapper
 {
@@ -17,7 +17,7 @@ class Info extends ArrayWrapper
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
      * @param \Magento\Framework\HTTP\PhpEnvironment\Request $request
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param string $carrierCode
      */
     public function __construct(
@@ -25,7 +25,7 @@ class Info extends ArrayWrapper
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
         \Magento\Framework\HTTP\PhpEnvironment\Request $request,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         $carrierCode = null
     ) {
         parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, [
@@ -38,7 +38,7 @@ class Info extends ArrayWrapper
 
     /**
      * {@inheritDoc}
-     * @see \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper::loadData()
+     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
      */
     protected function loadData($key)
     {

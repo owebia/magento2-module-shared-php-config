@@ -3,7 +3,7 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 class Customer extends SourceWrapper
 {
@@ -17,7 +17,7 @@ class Customer extends SourceWrapper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
      * @param mixed $data
      */
@@ -25,7 +25,7 @@ class Customer extends SourceWrapper
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         $data = null
     ) {

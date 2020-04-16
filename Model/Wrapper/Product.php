@@ -3,9 +3,9 @@
  * Copyright © 2016-2020 Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Owebia\AdvancedSettingCore\Model\Wrapper;
+namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
-use Owebia\AdvancedSettingCore\Model\Wrapper;
+use Owebia\SharedPhpConfig\Model\Wrapper;
 
 class Product extends SourceWrapper
 {
@@ -31,7 +31,7 @@ class Product extends SourceWrapper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\AdvancedSettingCore\Helper\Registry $registry
+     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param \Magento\Catalog\Model\ProductRepository $productRepository
      * @param mixed $data
      */
@@ -39,7 +39,7 @@ class Product extends SourceWrapper
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
-        \Owebia\AdvancedSettingCore\Helper\Registry $registry,
+        \Owebia\SharedPhpConfig\Helper\Registry $registry,
         \Magento\Catalog\Model\ProductRepository $productRepository,
         $data = null
     ) {
@@ -115,7 +115,7 @@ class Product extends SourceWrapper
 
     /**
      * {@inheritDoc}
-     * @see \Owebia\AdvancedSettingCore\Model\Wrapper\AbstractWrapper::loadData()
+     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
      */
     protected function loadData($key)
     {
