@@ -91,7 +91,7 @@ class Product extends SourceWrapper
     public function getAttributeText($attributeCode)
     {
         $this->loadIfRequired($attributeCode);
-        /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
+        /** @var \Magento\Catalog\Api\Data\Product $product */
         $product = $this->getSource();
         return $this->wrap($product->getAttributeText($attributeCode));
     }
@@ -131,19 +131,19 @@ class Product extends SourceWrapper
                     Wrapper\ProductStockItem::class
                 );
             case 'category_id':
-                /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
+                /** @var \Magento\Catalog\Api\Data\Product $product */
                 $product = $this->getSource();
                 return $product->getCategoryId();
             case 'category':
-                /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
+                /** @var \Magento\Catalog\Api\Data\Product $product */
                 $product = $this->getSource();
                 return $product->getCategory();
             case 'category_ids':
-                /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
+                /** @var \Magento\Catalog\Api\Data\Product $product */
                 $product = $this->getSource();
                 return $this->getSource()->getCategoryIds();
             case 'categories':
-                /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
+                /** @var \Magento\Catalog\Api\Data\Product $product */
                 $product = $this->getSource();
                 $categories = [];
                 foreach ($product->getCategoryCollection() as $category) {
