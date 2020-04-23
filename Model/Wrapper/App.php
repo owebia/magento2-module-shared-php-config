@@ -5,7 +5,7 @@
  */
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
-class App extends ArrayWrapper
+class App extends SourceWrapper
 {
     /**
      * @var array
@@ -37,6 +37,14 @@ class App extends ArrayWrapper
     ) {
         parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->appState = $appState;
+    }
+
+    /**
+     * @return \Magento\Framework\DataObject|null
+     */
+    protected function loadSource()
+    {
+        return $this->appState;
     }
 
     /**
