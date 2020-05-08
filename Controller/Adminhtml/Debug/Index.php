@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015-2020 Owebia. All rights reserved.
+ * Copyright © Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
 
