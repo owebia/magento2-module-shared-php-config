@@ -1,4 +1,8 @@
-Help,Aide,module,Owebia_AdvancedShippingCore,Block/System/Config/Form/Field/Config.php
-Reduce,Réduire,module,Owebia_AdvancedShippingCore,Block/System/Config/Form/Field/Config.php
-Edit,Modifier,module,Owebia_AdvancedShippingCore,Block/System/Config/Form/Field/Config.php
-"View Debug","Voir le debug",module,Owebia_AdvancedShippingCore,Block/System/Config/Form/Field/Config.php
+Edit,Modifier,module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.php
+Help,Aide,module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.php
+Reduce,Réduire,module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.php
+"View Debug","Voir le debug",module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.php
+
+"Unsupported type %1","Type %1 non supporté",module,Owebia_SharedPhpConfig,Helper/Registry.php
+
+"Wrapper can not be modified","Un Wrapper ne peut pas être modifié",module,Owebia_SharedPhpConfig,Model/Wrapper/ArrayWrapper.php
