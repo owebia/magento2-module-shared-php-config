@@ -39,10 +39,10 @@ class Category extends SourceWrapper
     protected function loadSource()
     {
         if ($this->data instanceof \Magento\Catalog\Api\Data\CategoryInterface) {
-            return $this->data;
+
+            return $this->categoryRespository
+                        ->get($this->data['entity_id']);
         }
-        return $this->categoryRespository
-            ->get($this->data['id']);
     }
 
     /**
