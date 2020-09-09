@@ -11,14 +11,14 @@ class ProductAttributeSet extends SourceWrapper
     /**
      * @var \Magento\Eav\Api\AttributeSetRepositoryInterface
      */
-    protected $attributeSetRespository;
+    protected $attributeSetRepository;
 
     /**
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
      * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRespository
+     * @param \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRepository
      * @param mixed $data
      */
     public function __construct(
@@ -26,11 +26,11 @@ class ProductAttributeSet extends SourceWrapper
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
         \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRespository,
+        \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRepository,
         $data = null
     ) {
         parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
-        $this->attributeSetRespository = $attributeSetRespository;
+        $this->attributeSetRepository = $attributeSetRepository;
     }
 
     /**
@@ -38,7 +38,7 @@ class ProductAttributeSet extends SourceWrapper
      */
     protected function loadSource()
     {
-        return $this->attributeSetRespository
+        return $this->attributeSetRepository
             ->get($this->data['id']);
     }
 }

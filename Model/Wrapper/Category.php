@@ -11,14 +11,14 @@ class Category extends SourceWrapper
     /**
      * @var \Magento\Catalog\Api\CategoryRepositoryInterface
      */
-    protected $categoryRespository;
+    protected $categoryRepository;
 
     /**
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
      * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRespository
+     * @param \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
      * @param mixed $data
      */
     public function __construct(
@@ -26,11 +26,11 @@ class Category extends SourceWrapper
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
         \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRespository,
+        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
         $data = null
     ) {
         parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
-        $this->categoryRespository = $categoryRespository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -41,7 +41,7 @@ class Category extends SourceWrapper
         if ($this->data instanceof \Magento\Catalog\Api\Data\CategoryInterface) {
             return $this->data;
         }
-        return $this->categoryRespository
+        return $this->categoryRepository
             ->get($this->data['id']);
     }
 
@@ -52,7 +52,7 @@ class Category extends SourceWrapper
      */
     public function load()
     {
-        $this->source = $this->categoryRespository
+        $this->source = $this->categoryRepository
             ->get($this->entity_id);
         $this->cache->setData([]);
         return $this;

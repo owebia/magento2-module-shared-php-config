@@ -23,14 +23,14 @@ class Store extends SourceWrapper
     /**
      * @var \Magento\Store\Api\StoreRepositoryInterface
      */
-    protected $storeRespository;
+    protected $storeRepository;
 
     /**
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper
      * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Store\Api\StoreRepositoryInterface $storeRespository
+     * @param \Magento\Store\Api\StoreRepositoryInterface $storeRepository
      * @param mixed $data
      */
     public function __construct(
@@ -38,11 +38,11 @@ class Store extends SourceWrapper
         \Magento\Backend\Model\Auth\Session $backendAuthSession,
         \Magento\Framework\Escaper $escaper,
         \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Store\Api\StoreRepositoryInterface $storeRespository,
+        \Magento\Store\Api\StoreRepositoryInterface $storeRepository,
         $data = null
     ) {
         parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
-        $this->storeRespository = $storeRespository;
+        $this->storeRepository = $storeRepository;
     }
 
     /**
@@ -50,7 +50,7 @@ class Store extends SourceWrapper
      */
     protected function loadSource()
     {
-        return $this->storeRespository
+        return $this->storeRepository
             ->getById($this->getStoreId());
     }
 
