@@ -131,13 +131,9 @@ class Product extends SourceWrapper
                     Wrapper\ProductStockItem::class
                 );
             case 'category_id':
-                /** @var \Magento\Catalog\Api\Data\Product $product */
-                $product = $this->getSource();
-                return $product->getCategoryId();
+                return $this->category_ids[0] ?? null;
             case 'category':
-                /** @var \Magento\Catalog\Api\Data\Product $product */
-                $product = $this->getSource();
-                return $product->getCategory();
+                return $this->categories[0] ?? null;
             case 'category_ids':
                 /** @var \Magento\Catalog\Api\Data\Product $product */
                 $product = $this->getSource();
@@ -146,7 +142,9 @@ class Product extends SourceWrapper
                 /** @var \Magento\Catalog\Api\Data\Product $product */
                 $product = $this->getSource();
                 $categories = [];
-                foreach ($product->getCategoryCollection() as $category) {
+                $collection = $product->getCategoryCollection()
+                    ->addAttributeToSelect('name');
+                foreach ($collection as $category) {
                     $categories[] = $category;
                 }
                 return $categories;
