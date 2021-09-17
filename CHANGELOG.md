@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 3.0.5 (17 Sep, 2021)
+- use `present` as copyright ending year
+
 ### 3.0.4 (14 May, 2021)
 - add changelog
 
