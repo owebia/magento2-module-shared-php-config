@@ -18,8 +18,7 @@ use PhpParser\Node;
  */
 class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
-    const UNDEFINED_INDEX = 301;
+    private const UNDEFINED_INDEX = 301;
 
     /**
      * @var bool
@@ -474,7 +473,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
             return $this->debug($expr, $variable[$propertyName]);
         } elseif (is_array($variable) && !isset($variable[$propertyName])) {
             $this->debug($expr, null);
-            throw new \OutOfBoundsException("Undefined index: $propertyName", $this::UNDEFINED_INDEX);
+            throw new \OutOfBoundsException("Undefined index: $propertyName", static::UNDEFINED_INDEX);
         }
         return $this->error("Unsupported ArrayDimFetch expression", $expr);
     }
