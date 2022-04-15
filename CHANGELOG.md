@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 3.0.7 (15 Apr, 2022)
+- apply Magento2 coding standard
+
 ### 3.0.6 (15 Apr, 2022)
 - apply PSR-12 coding standard
 - use `bool` instead of `boolean` in PHPDoc
