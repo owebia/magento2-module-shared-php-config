@@ -11,8 +11,9 @@ use Owebia\SharedPhpConfig\Helper\Config;
 use Owebia\SharedPhpConfig\Helper\Evaluator;
 use Owebia\SharedPhpConfig\Helper\Registry;
 use Owebia\SharedPhpConfig\Model\CallbackHandler;
+use PHPUnit\Framework\TestCase;
 
-abstract class AbstractTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractTest extends TestCase
 {
     /**
      * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
@@ -39,7 +40,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     protected $callbackHandler;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $arguments = [

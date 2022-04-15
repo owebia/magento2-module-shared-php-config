@@ -7,7 +7,7 @@
 
 namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator;
 
-class StmtIfTest extends AbstractTest
+class IfTest extends AbstractTest
 {
     /**
      * Test If

@@ -11,7 +11,7 @@ namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
  * Test Incrementing/Decrementing Operators
  * https://www.php.net/manual/en/language.operators.increment.php
  */
-class IncrementingDecrementingOperators extends AbstractTest
+class IncrementingDecrementingOperatorsTest extends AbstractTest
 {
     /**
      * Test Pre-increment
