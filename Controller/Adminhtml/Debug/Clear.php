@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Owebia. All rights reserved.
  * See COPYING.txt for license details.
@@ -11,7 +12,6 @@ use Magento\Framework\Filesystem;
 
 class Clear extends \Magento\Backend\App\Action
 {
-
     /**
      * @return \Magento\Backend\Model\View\Result\Redirect
      */

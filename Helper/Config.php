@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Copyright © Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Owebia\SharedPhpConfig\Helper;
 
 use PhpParser\ParserFactory;
@@ -10,7 +12,6 @@ use PhpParser\Node\Stmt\Nop;
 
 class Config extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
     /**
      * @var array
      */

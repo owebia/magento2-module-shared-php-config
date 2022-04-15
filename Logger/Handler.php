@@ -1,13 +1,14 @@
 <?php
+
 /**
  * Copyright © Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Owebia\SharedPhpConfig\Logger;
 
 class Handler extends \Magento\Framework\Logger\Handler\Base
 {
-
     /**
      * @var string
      */

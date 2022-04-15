@@ -1,13 +1,14 @@
 <?php
+
 /**
  * Copyright © Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Owebia\SharedPhpConfig\Logger;
 
 class Logger extends \Monolog\Logger
 {
-
     /**
      * @param string $title
      * @param string $msg

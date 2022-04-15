@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Copyright © Owebia. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Owebia\SharedPhpConfig\Helper;
 
 use Owebia\SharedPhpConfig\Model\Wrapper;
 
 class Registry extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
     /**
      * @var \Owebia\SharedPhpConfig\Model\WrapperFactory
      */
