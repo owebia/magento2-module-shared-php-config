@@ -22,7 +22,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     const UNDEFINED_INDEX = 301;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $debug = false;
 
@@ -133,7 +133,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param boolean $debug
+     * @param bool $debug
      */
     public function setDebug($debug)
     {
@@ -323,7 +323,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param \PhpParser\Node\Expr $expression
      * @param int $increment
-     * @param boolean $returnAfter
+     * @param bool $returnAfter
      * @return mixed
      * @throws \Exception
      */

@@ -10,7 +10,7 @@ namespace Owebia\SharedPhpConfig\Model\Wrapper;
 class SourceWrapper extends AbstractWrapper
 {
     /**
-     * @var \Magento\Framework\DataObject | boolean
+     * @var \Magento\Framework\DataObject|bool
      */
     protected $source = false;
 

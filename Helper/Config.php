@@ -18,7 +18,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     protected $parsingCache = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $debug = true;
 
@@ -64,7 +64,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
      * @param string $configuration
      * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
      * @param object $callbackManager
-     * @param boolean $debug
+     * @param bool $debug
      * @return Config
      */
     public function parse(
