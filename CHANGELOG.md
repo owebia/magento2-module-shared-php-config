@@ -3,6 +3,14 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 3.0.6 (15 Apr, 2022)
+- apply PSR-12 coding standard
+- use `bool` instead of `boolean` in PHPDoc
+- fix constant declaration and usage
+- fix signature mismatch errors while keeping backward compatibility
+- remove support for PHP versions 5.5, 5.6 & 7.0
+- add support for PHP versions 8.0 & 8.1
+
 ### 3.0.5 (17 Sep, 2021)
 - use `present` as copyright ending year
 
