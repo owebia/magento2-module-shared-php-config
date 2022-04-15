@@ -157,6 +157,8 @@ abstract class AbstractWrapper
     abstract protected function loadData($key);
 
     /**
+     * @param mixed $value
+     * @param string $key
      * @return string
      */
     protected function helpValue($value, $key)

@@ -111,6 +111,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param object $node
+     * @param object $callbackManager
      * @param bool $debug
      * @throws \Exception
      */

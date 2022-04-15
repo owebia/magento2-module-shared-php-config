@@ -88,6 +88,7 @@ class Product extends SourceWrapper
     }
 
     /**
+     * @param string $attributeCode
      * @return string | null
      */
     public function getAttributeText($attributeCode)

@@ -50,7 +50,7 @@ require([
 
             if (typeof ace !== 'undefined') {
                 jinput.addClass('hidden');
-                var editorDiv = $('<div class="pceAceEditor"/>').insertBefore(jinput);
+                var editorDiv = $('<div class="pceAceEditor"></div>').insertBefore(jinput);
 
                 var editor = ace.edit(editorDiv[0]);
                 editor.setValue(jinput.val());

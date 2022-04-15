@@ -58,6 +58,7 @@ class CallbackHandler
     }
 
     /**
+     * @param string $msg
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function errorCallback($msg)
@@ -66,6 +67,7 @@ class CallbackHandler
     }
 
     /**
+     * @param string $msg
      * @return string
      */
     public function appendParsingError($msg)

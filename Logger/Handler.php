@@ -22,7 +22,7 @@ class Handler extends \Magento\Framework\Logger\Handler\Base
     /**
      * @{inheritDoc}
      *
-     * @param $record array
+     * @param array $record
      * @return void
      */
     public function write(array $record): void

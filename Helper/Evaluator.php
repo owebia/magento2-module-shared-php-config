@@ -179,6 +179,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param mixed $node
      * @param mixed $result
+     * @param bool $wrap
      * @return mixed
      */
     protected function debug($node, $result, $wrap = true)
@@ -322,7 +323,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param \PhpParser\Node\Expr $expression
      * @param int $increment
-     * @param bool $returnAfter
+     * @param bool $incrementBefore
      * @return mixed
      * @throws \Exception
      */

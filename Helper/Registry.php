@@ -44,6 +44,7 @@ class Registry extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * @param \Magento\Framework\DataObject $request
      * @return \Owebia\SharedPhpConfig\Helper\Registry
      */
     public function init(\Magento\Framework\DataObject $request)

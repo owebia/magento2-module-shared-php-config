@@ -8,6 +8,7 @@
 namespace Owebia\SharedPhpConfig\Controller\Adminhtml\Debug;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Filesystem;
 
 class Clear extends \Magento\Backend\App\Action
@@ -23,6 +24,8 @@ class Clear extends \Magento\Backend\App\Action
 
         $writeInterface->writeFile('owebia_advancedsettingcore.log', '');
 
-        return $this->_redirect('owebia_advancedsettingcore/debug/index');
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        return $resultRedirect->setUrl($this->getUrl('owebia_advancedsettingcore/debug/index'));
     }
 }
