@@ -13,7 +13,8 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset): bool
     {
         return isset($this->data[$offset]);
     }
@@ -22,6 +23,7 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
      * @param mixed $offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return parent::__get($offset);
@@ -33,7 +35,8 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
      * @throws \Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function offsetSet($offset, $value)
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value): void
     {
         throw new \Magento\Framework\Exception\LocalizedException(__("Wrapper can not be modified"));
     }
@@ -43,7 +46,8 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
      * @throws \Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function offsetUnset($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($offset): void
     {
         throw new \Magento\Framework\Exception\LocalizedException(__("Wrapper can not be modified"));
     }

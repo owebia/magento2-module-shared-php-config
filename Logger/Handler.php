@@ -25,7 +25,7 @@ class Handler extends \Magento\Framework\Logger\Handler\Base
      * @param $record array
      * @return void
      */
-    public function write(array $record)
+    public function write(array $record): void
     {
         $record['formatted'] = $record['message'];
         parent::write($record);
