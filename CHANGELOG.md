@@ -10,6 +10,7 @@ Module: `owebia/magento2-module-shared-php-config`
 - fix signature mismatch errors while keeping backward compatibility
 - remove support for PHP versions 5.5, 5.6 & 7.0
 - add support for PHP versions 8.0 & 8.1
+- fix phpunit compatibility
 
 ### 3.0.5 (17 Sep, 2021)
 - use `present` as copyright ending year
