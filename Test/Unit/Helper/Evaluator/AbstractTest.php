@@ -10,7 +10,7 @@ namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator;
 use Owebia\SharedPhpConfig\Helper\Config;
 use Owebia\SharedPhpConfig\Helper\Evaluator;
 use Owebia\SharedPhpConfig\Helper\Registry;
-use Owebia\SharedPhpConfig\Model\CallbackHandler;
+use Owebia\SharedPhpConfig\Model\FunctionProxy;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTest extends TestCase
@@ -36,9 +36,9 @@ abstract class AbstractTest extends TestCase
     protected $registry;
 
     /**
-     * @var \Owebia\SharedPhpConfig\Model\CallbackHandler
+     * @var \Owebia\SharedPhpConfig\Model\FunctionProxy
      */
-    protected $callbackHandler;
+    protected $functionProxy;
 
     protected function setUp(): void
     {
@@ -47,7 +47,7 @@ abstract class AbstractTest extends TestCase
             'evaluator' => $this->objectManager->getObject(Evaluator::class),
         ];
         $this->configHelper = $this->objectManager->getObject(Config::class, $arguments);
-        $this->callbackHandler = $this->objectManager->getObject(CallbackHandler::class);
+        $this->functionProxy = $this->objectManager->getObject(FunctionProxy::class);
         $this->init();
     }
 
@@ -82,7 +82,7 @@ abstract class AbstractTest extends TestCase
         $this->configHelper->parse(
             $configuration,
             $this->registry,
-            $this->callbackHandler
+            $this->functionProxy
         );
         return $this;
     }
