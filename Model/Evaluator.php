@@ -5,8 +5,14 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Helper;
+declare(strict_types=1);
 
+namespace Owebia\SharedPhpConfig\Model;
+
+use Magento\Framework\Escaper;
+use Owebia\SharedPhpConfig\Api\FunctionProxyInterface;
+use Owebia\SharedPhpConfig\Api\RegistryInterface;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
 use PhpParser\Node;
 
 /**
@@ -16,111 +22,74 @@ use PhpParser\Node;
  * @SuppressWarnings(PHPMD.NPathComplexity)
  * @SuppressWarnings(PHPMD.TooManyMethods)
  */
-class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
+class Evaluator
 {
     private const UNDEFINED_INDEX = 301;
 
     /**
      * @var bool
      */
-    protected $debug = false;
+    private $debug = false;
 
     /**
      * @var array
      */
-    protected $debugOutput = [];
+    private $debugOutput = [];
 
     /**
      * @var array
      */
-    protected $errors = [];
+    private $errors = [];
 
     /**
      * @var integer
      */
-    protected $counter = 1;
+    private $counter = 1;
 
     /**
-     * @var array
+     * @var Escaper
      */
-    protected $allowedFunctions = [
-        // Math Functions
-        'abs',
-        'ceil',
-        'floor',
-        'max',
-        'min',
-        'round',
-        // String Functions
-        'explode',
-        'implode',
-        'strlen',
-        'strpos',
-        'strtolower',
-        'strtoupper',
-        'substr',
-        // Multibyte String Functions
-        'mb_strlen',
-        'mb_strpos',
-        'mb_strtolower',
-        'mb_strtoupper',
-        'mb_substr',
-        // PCRE Functions
-        'preg_match',
-        'preg_replace',
-        // Date/Time Functions
-        'date',
-        'strtotime',
-        'time',
-        // Array Functions
-        'array_filter',
-        'array_intersect',
-        'array_key_exists',
-        'array_keys',
-        'array_map',
-        'array_reduce',
-        'array_search',
-        'array_sum',
-        'array_unique',
-        'array_values',
-        'count',
-        'in_array',
-        'range',
-        // JSON Functions
-        'json_decode',
-        'json_encode',
-    ];
+    private $escaper;
 
     /**
-     * @var \Owebia\SharedPhpConfig\Helper\Registry
+     * @var WrapperContext
      */
-    protected $registry = null;
+    private $wrapperContext;
 
     /**
-     * @var \Owebia\SharedPhpConfig\Model\CallbackHandler
+     * @var FunctionProxyInterface
      */
-    protected $callbackHandler = null;
+    private $functionProxy;
+
+    /**
+     * @var RegistryInterface
+     */
+    private $registry = null;
 
     /**
      * @var \PhpParser\PrettyPrinter\Standard
      */
-    protected $prettyPrinter = null;
+    private $prettyPrinter = null;
 
     /**
-     * @var \Magento\Framework\Escaper
-     */
-    protected $escaper;
-
-    /**
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\Escaper $escaper
+     * @param Escaper $escaper
+     * @param WrapperContext $wrapperContext
+     * @param FunctionProxyInterface|null $functionProxy
+     * @param RegistryInterface $registry
+     * @param bool $debug = false
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\Escaper $escaper
+        Escaper $escaper,
+        WrapperContext $wrapperContext,
+        FunctionProxyInterface $functionProxy = null,
+        RegistryInterface $registry,
+        bool $debug = false
     ) {
-        parent::__construct($context);
         $this->escaper = $escaper;
+        $this->wrapperContext = $wrapperContext;
+        $this->functionProxy = $functionProxy;
+        $this->registry = $registry;
+        $this->debug = $debug;
     }
 
     /**
@@ -132,11 +101,13 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param bool $debug
+     * Reset
      */
-    public function setDebug($debug)
+    public function reset()
     {
-        $this->debug = $debug;
+        $this->debugOutput = [];
+        $this->errors = [];
+        $this->counter = 1;
     }
 
     /**
@@ -144,7 +115,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @param mixed $expr
      * @throws \Exception
      */
-    protected function error($msg, $expr)
+    private function error($msg, $expr)
     {
         $trace = debug_backtrace(false);
         $this->errors[] = [
@@ -169,20 +140,13 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         return implode('<br/>', $msg);
     }
 
-    public function initialize()
-    {
-        $this->debugOutput = [];
-        $this->errors = [];
-        $this->counter = 1;
-    }
-
     /**
      * @param mixed $node
      * @param mixed $result
      * @param bool $wrap
      * @return mixed
      */
-    protected function debug($node, $result, $wrap = true)
+    private function debug($node, $result, $wrap = true)
     {
         if ($this->debug) {
             $right = $this->prettyPrint($result);
@@ -197,16 +161,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
                     . '</pre></div></div>';
             }
         }
-        return $wrap ? $this->wrap($result) : $result;
-    }
-
-    /**
-     * @param mixed $data
-     * @return mixed
-     */
-    protected function wrap($data)
-    {
-        return $this->registry->wrap($data);
+        return $wrap ? $this->wrapperContext->wrap($result) : $result;
     }
 
     /**
@@ -214,12 +169,9 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getPrettyPrinter()
     {
-        if (!isset($this->prettyPrinter)) {
-            $this->prettyPrinter = new \PhpParser\PrettyPrinter\Standard([
-                'shortArraySyntax' => true
-            ]);
-        }
-        return $this->prettyPrinter;
+        return $this->prettyPrinter ??= new \PhpParser\PrettyPrinter\Standard([
+            'shortArraySyntax' => true
+        ]);
     }
 
     /**
@@ -280,7 +232,12 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         return null;
     }
 
-    protected function doesArrayContainOnly($data, $className)
+    /**
+     * @param array $data
+     * @param string $className
+     * @return bool
+     */
+    private function doesArrayContainOnly(array $data, string $className): bool
     {
         foreach ($data as $item) {
             if (!is_a($item, $className)) {
@@ -288,26 +245,6 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
         return true;
-    }
-
-    /**
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @return \Owebia\SharedPhpConfig\Helper\Evaluator
-     */
-    public function setRegistry(\Owebia\SharedPhpConfig\Helper\Registry $registry)
-    {
-        $this->registry = $registry;
-        return $this;
-    }
-
-    /**
-     * @param \Owebia\SharedPhpConfig\Model\CallbackHandler $callbackHandler
-     * @return \Owebia\SharedPhpConfig\Helper\Evaluator
-     */
-    public function setCallbackManager(\Owebia\SharedPhpConfig\Model\CallbackHandler $callbackHandler)
-    {
-        $this->callbackHandler = $callbackHandler;
-        return $this;
     }
 
     /**
@@ -327,7 +264,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function incOp($expression, $increment, $incrementBefore)
+    private function incOp($expression, $increment, $incrementBefore)
     {
         $variableName = $expression->var->name;
         $oldValue = $this->registry->get($variableName);
@@ -341,7 +278,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExpr(Node\Expr $expr)
+    private function evalNodeExpr(Node\Expr $expr)
     {
         $className = get_class($expr);
         if ($expr instanceof Node\Expr\BinaryOp) {
@@ -437,7 +374,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprArray(Node\Expr\Array_ $expr)
+    private function evalNodeExprArray(Node\Expr\Array_ $expr)
     {
         $items = [];
         foreach ($expr->items as $item) {
@@ -456,7 +393,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprArrayDimFetch(Node\Expr\ArrayDimFetch $expr)
+    private function evalNodeExprArrayDimFetch(Node\Expr\ArrayDimFetch $expr)
     {
         $propertyName = $this->evl($expr->dim);
         $variable = $this->evl($expr->var);
@@ -467,7 +404,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
             $variable = $this->evl($variable);
         }
         if (!is_array($variable)) {
-            $variableName = isset($expr->var->name) ? $expr->var->name : '';
+            $variableName = $expr->var->name ?? '';
             return $this->error("Unsupported ArrayDimFetch expression"
                 . " - Variable \${$variableName} is not an array", $expr);
         } elseif (is_array($variable) && isset($variable[$propertyName])) {
@@ -485,7 +422,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalAssignOp(Node\Expr\AssignOp $expression, $callback)
+    private function evalAssignOp(Node\Expr\AssignOp $expression, $callback)
     {
         $variableName = $expression->var->name;
         $value = $callback(
@@ -501,7 +438,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprAssign(Node\Expr\Assign $expr)
+    private function evalNodeExprAssign(Node\Expr\Assign $expr)
     {
         if (isset($expr->var->name)
             && isset($expr->expr)
@@ -551,7 +488,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprAssignOp(Node\Expr\AssignOp $expr)
+    private function evalNodeExprAssignOp(Node\Expr\AssignOp $expr)
     {
         $className = get_class($expr);
         switch ($className) {
@@ -621,7 +558,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
             // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
             case 'Node\\Expr\\AssignOp\\Coalesce':
                 return $this->evalAssignOp($expr, function ($left, $right) {
-                    return isset($left) ? $left : $right; // Keep compatibility with PHP 5.6
+                    return $left ?? $right;
                 });
 
             default:
@@ -634,7 +571,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprBinaryOp(Node\Expr\BinaryOp $expr)
+    private function evalNodeExprBinaryOp(Node\Expr\BinaryOp $expr)
     {
         $className = get_class($expr);
         switch ($className) {
@@ -732,7 +669,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprCast(Node\Expr\Cast $expr)
+    private function evalNodeExprCast(Node\Expr\Cast $expr)
     {
         $className = get_class($expr);
         switch ($className) {
@@ -760,7 +697,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprClosure(Node\Expr\Closure $expr)
+    private function evalNodeExprClosure(Node\Expr\Closure $expr)
     {
         if ($expr->static !== false) {
             return $this->error("Unsupported code - closure \$expression->static !== false", $expr);
@@ -779,16 +716,16 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
                 try {
                     foreach ($expr->params as $param) {
                         // v.3 $param->name, v.4 $param->var->name
-                        $varName = isset($param->var->name) ? $param->var->name : $param->name;
+                        $varName = $param->var->name ?? $param->name;
                         $value = empty($args) ? $evaluator->evaluate($param) : array_shift($args);
-                        $registry->register($varName, $this->wrap($value));
+                        $registry->register($varName, $this->wrapperContext->wrap($value));
                     }
 
                     foreach ($expr->uses as $use) {
                         // v.3 $use->var, v.4 $use->var->name
-                        $varName = isset($use->var->name) ? $use->var->name : $use->var;
+                        $varName = $use->var->name ?? $use->var;
                         $value = $registry->get($varName, $registry->getCurrentScopeIndex() - 1);
-                        $registry->register($varName, $this->wrap($value));
+                        $registry->register($varName, $this->wrapperContext->wrap($value));
                     }
 
                     $result = $evaluator->evaluateStmts($expr->stmts);
@@ -810,7 +747,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprFuncCall(Node\Expr\FuncCall $expr)
+    private function evalNodeExprFuncCall(Node\Expr\FuncCall $expr)
     {
         if (isset($expr->name->parts)) {
             if (count($expr->name->parts) != 1) {
@@ -818,24 +755,10 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
             }
 
             $functionName = $expr->name->parts[0];
-            $map = [
-                'help' => [ $this, 'fnHelp' ],
-                '__' => [ $this, 'translateCallback' ],
-            ];
-            $isFunctionAllowed = in_array($functionName, $this->allowedFunctions)
-                || in_array($functionName, array_keys($map));
-            if ($this->callbackHandler->hasCallback($functionName . 'Callback')) {
-                $functionName = [ $this->callbackHandler, $functionName . 'Callback' ];
+            if ($this->functionProxy->functionExists($functionName)) {
+                $functionName = [$this->functionProxy, $functionName];
             } else {
-                if (!$isFunctionAllowed && function_exists($functionName)) {
-                    return $this->error("Unauthorized function '{$functionName}'", $expr);
-                } elseif (!$isFunctionAllowed) {
-                    return $this->error("Unknown function '{$functionName}'", $expr);
-                }
-
-                if (isset($map[$functionName])) {
-                    $functionName = $map[$functionName];
-                }
+                return $this->error("Unknown function '{$functionName}'", $expr);
             }
 
             $args = $this->evaluateArgs($expr);
@@ -864,7 +787,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprMethodCall(Node\Expr\MethodCall $expr)
+    private function evalNodeExprMethodCall(Node\Expr\MethodCall $expr)
     {
         $methodName = $this->evl($expr->name);
         $variable = $this->evl($expr->var);
@@ -876,7 +799,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         $method = null;
-        $variableName = isset($expr->var->name) ? $expr->var->name : '';
+        $variableName = $expr->var->name ?? '';
         if (!isset($variable)) {
             return $this->error("Unsupported MethodCall expression"
                 . " - Unkown variable \${$variableName}", $expr);
@@ -889,7 +812,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         ])) {
             $method = [
                 $variable,
-                $methodName
+                $methodName,
             ];
         } elseif ($variable instanceof \Owebia\SharedPhpConfig\Model\Wrapper\SourceWrapper && is_callable([
             $variable->getSource(),
@@ -897,20 +820,21 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
         ])) {
             $method = [
                 $variable->getSource(),
-                $methodName
+                $methodName,
             ];
         } elseif (is_array($variable) && isset($variable[$methodName]) && is_callable($variable[$methodName])) {
             $method = $variable[$methodName];
         }
         if (!$method) {
-            return $this->error("Unsupported MethodCall expression - Unkown method" . ( is_callable([
-                $variable,
-                $methodName
-            ]) ? '1' : '0'), $expr);
+            return $this->error(
+                "Unsupported MethodCall expression - Unkown method"
+                    . (is_callable([$variable, $methodName]) ? '1' : '0'),
+                $expr
+            );
         }
         $args = $this->evaluateArgs($expr);
         $result = $this->callFunction($method, $args);
-        $result = $this->wrap($result);
+        $result = $this->wrapperContext->wrap($result);
         return $this->debug($expr, $result);
     }
 
@@ -919,7 +843,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprPropertyFetch(Node\Expr\PropertyFetch $expr)
+    private function evalNodeExprPropertyFetch(Node\Expr\PropertyFetch $expr)
     {
         $propertyName = $this->evl($expr->name);
         $variable = $this->evl($expr->var);
@@ -952,7 +876,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeExprStaticPropertyFetch(Node\Expr\StaticPropertyFetch $expr)
+    private function evalNodeExprStaticPropertyFetch(Node\Expr\StaticPropertyFetch $expr)
     {
         // StaticPropertyFetch is forbidden
         return $this->error("Unsupported StaticPropertyFetch expression", $expr);
@@ -963,7 +887,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeScalar(Node\Scalar $expr)
+    private function evalNodeScalar(Node\Scalar $expr)
     {
         $className = get_class($expr);
         switch ($className) {
@@ -982,7 +906,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeStmt(Node\Stmt $expr)
+    private function evalNodeStmt(Node\Stmt $expr)
     {
         $className = get_class($expr);
         switch ($className) {
@@ -1022,7 +946,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeStmtForeach(Node\Stmt\Foreach_ $expr)
+    private function evalNodeStmtForeach(Node\Stmt\Foreach_ $expr)
     {
         $exp = $this->evl($expr->expr);
         $valueVar = $this->evl($expr->valueVar->name);
@@ -1031,9 +955,9 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
             return $this->error("Unsupported Foreach_ expression - Undefined variable", $expr);
         }
         foreach ($exp as $key => $value) {
-            $this->registry->register($valueVar, $this->wrap($value), true);
+            $this->registry->register($valueVar, $this->wrapperContext->wrap($value), true);
             if ($keyVar) {
-                $this->registry->register($keyVar, $this->wrap($key), true);
+                $this->registry->register($keyVar, $this->wrapperContext->wrap($key), true);
             }
             $result = $this->evaluateStmts($expr->stmts);
             if ($result instanceof Node\Stmt\Return_) {
@@ -1048,7 +972,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evalNodeStmtIf(Node\Stmt\If_ $expr)
+    private function evalNodeStmtIf(Node\Stmt\If_ $expr)
     {
         $cond = $this->evl($expr->cond);
         if ($cond) {
@@ -1076,7 +1000,7 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      * @throws \Exception
      */
-    protected function evl($expr)
+    private function evl($expr)
     {
         if (is_string($expr)) {
             return $expr;
@@ -1117,28 +1041,17 @@ class Evaluator extends \Magento\Framework\App\Helper\AbstractHelper
      * @param array $args
      * @return type
      */
-    protected function callFunction($method, $args = [])
+    private function callFunction($method, $args = [])
     {
         // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         return call_user_func_array($method, $args);
     }
 
     /**
-     * @param mixed $args,...
-     * @return string
-     */
-    protected function translateCallback(/* ...$args */)
-    {
-        $args = func_get_args();
-        $text = array_shift($args);
-        return (string) new \Magento\Framework\Phrase($text, $args);
-    }
-
-    /**
      * @param type $expr
      * @return array
      */
-    protected function evaluateArgs($expr)
+    private function evaluateArgs($expr)
     {
         $args = [];
         foreach ($expr->args as $arg) {
