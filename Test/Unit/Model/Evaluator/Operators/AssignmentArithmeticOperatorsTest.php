@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
  * Test Assignment Operators - Arithmetic Operators

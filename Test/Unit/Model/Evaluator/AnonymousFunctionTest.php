@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator;
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator;
 
 /**
  * Test Anonymous functions

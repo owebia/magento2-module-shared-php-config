@@ -5,48 +5,40 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
- * Test Bitwise Operators
+ * Test Assignment Operators - Bitwise Operators
+ * https://www.php.net/manual/en/language.operators.assignment.php
  * https://www.php.net/manual/en/language.operators.bitwise.php
  */
-class BitwiseOperatorsTest extends AbstractTest
+class AssignmentBitwiseOperatorsTest extends AbstractTest
 {
     /**
-     * Test And
+     * Test Bitwise And
      */
-    public function testBitwiseOperators()
+    public function testAnd()
     {
-        $this->parse('$a = 1 & 5;')
+        $this->parse('$a = 1; $a &= 5;')
             ->assertVariableSame('$a', 1 & 5);
     }
 
     /**
-     * Test Or (inclusive or)
+     * Test Bitwise Or
      */
-    public function testOr()
+    public function testBitwiseOr()
     {
-        $this->parse('$a = 1 | 2;')
+        $this->parse('$a = 1; $a |= 2;')
             ->assertVariableSame('$a', 1 | 2);
     }
 
     /**
-     * Test Xor (exclusive or)
+     * Test Bitwise Xor
      */
-    public function testXor()
+    public function testBitwiseXor()
     {
-        $this->parse('$a = 1 ^ 5;')
+        $this->parse('$a = 1; $a ^= 5;')
             ->assertVariableSame('$a', 1 ^ 5);
-    }
-
-    /**
-     * Test Not
-     */
-    public function testNot()
-    {
-        $this->parse('$a = ~ 1;')
-            ->assertVariableSame('$a', ~ 1);
     }
 
     /**
@@ -54,7 +46,7 @@ class BitwiseOperatorsTest extends AbstractTest
      */
     public function testShiftLeft()
     {
-        $this->parse('$a = 1 << 5;')
+        $this->parse('$a = 1; $a <<= 5;')
             ->assertVariableSame('$a', 1 << 5);
     }
 
@@ -63,7 +55,7 @@ class BitwiseOperatorsTest extends AbstractTest
      */
     public function testShiftRight()
     {
-        $this->parse('$a = 1 >> 5;')
+        $this->parse('$a = 1; $a >>= 5;')
             ->assertVariableSame('$a', 1 >> 5);
     }
 }

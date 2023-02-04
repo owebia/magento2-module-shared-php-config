@@ -5,12 +5,12 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
  * Test Bitwise Operators
  * https://www.php.net/manual/en/language.operators.bitwise.php
- * @phpcs:disable Squiz.Operators.ValidLogicalOperators.NotAllowed
+ * phpcs:disable Squiz.Operators.ValidLogicalOperators.NotAllowed
  */
 class LogicalOperatorsTest extends AbstractTest
 {

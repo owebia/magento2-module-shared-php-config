@@ -5,40 +5,48 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
- * Test Assignment Operators - Bitwise Operators
- * https://www.php.net/manual/en/language.operators.assignment.php
+ * Test Bitwise Operators
  * https://www.php.net/manual/en/language.operators.bitwise.php
  */
-class AssignmentBitwiseOperatorsTest extends AbstractTest
+class BitwiseOperatorsTest extends AbstractTest
 {
     /**
-     * Test Bitwise And
+     * Test And
      */
-    public function testAnd()
+    public function testBitwiseOperators()
     {
-        $this->parse('$a = 1; $a &= 5;')
+        $this->parse('$a = 1 & 5;')
             ->assertVariableSame('$a', 1 & 5);
     }
 
     /**
-     * Test Bitwise Or
+     * Test Or (inclusive or)
      */
-    public function testBitwiseOr()
+    public function testOr()
     {
-        $this->parse('$a = 1; $a |= 2;')
+        $this->parse('$a = 1 | 2;')
             ->assertVariableSame('$a', 1 | 2);
     }
 
     /**
-     * Test Bitwise Xor
+     * Test Xor (exclusive or)
      */
-    public function testBitwiseXor()
+    public function testXor()
     {
-        $this->parse('$a = 1; $a ^= 5;')
+        $this->parse('$a = 1 ^ 5;')
             ->assertVariableSame('$a', 1 ^ 5);
+    }
+
+    /**
+     * Test Not
+     */
+    public function testNot()
+    {
+        $this->parse('$a = ~ 1;')
+            ->assertVariableSame('$a', ~ 1);
     }
 
     /**
@@ -46,7 +54,7 @@ class AssignmentBitwiseOperatorsTest extends AbstractTest
      */
     public function testShiftLeft()
     {
-        $this->parse('$a = 1; $a <<= 5;')
+        $this->parse('$a = 1 << 5;')
             ->assertVariableSame('$a', 1 << 5);
     }
 
@@ -55,7 +63,7 @@ class AssignmentBitwiseOperatorsTest extends AbstractTest
      */
     public function testShiftRight()
     {
-        $this->parse('$a = 1; $a >>= 5;')
+        $this->parse('$a = 1 >> 5;')
             ->assertVariableSame('$a', 1 >> 5);
     }
 }

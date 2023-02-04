@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Helper\Evaluator\Operators;
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
  * Test Type Casting
@@ -18,7 +18,7 @@ class CastingTest extends AbstractTest
      */
     public function testIntegerCasting()
     {
-        $this->parse('$a = (int) 3.2; $b = (int) "3";')
+        $this->parse('$a = (int)3.2; $b = (int)"3";')
             ->assertVariableSame('$a', 3)
             ->assertVariableSame('$b', 3);
     }
@@ -28,7 +28,7 @@ class CastingTest extends AbstractTest
      */
     public function testBooleanCasting()
     {
-        $this->parse('$a = (bool) 10; $b = (bool) 0;')
+        $this->parse('$a = (bool)10; $b = (bool)0;')
             ->assertVariableSame('$a', true)
             ->assertVariableSame('$b', false);
     }
@@ -38,7 +38,7 @@ class CastingTest extends AbstractTest
      */
     public function testFloatCasting()
     {
-        $this->parse('$a = (float) "3.2"; $b = (double) "1.5";')
+        $this->parse('$a = (float)"3.2"; $b = (double)"1.5";')
             ->assertVariableSame('$a', 3.2)
             ->assertVariableSame('$b', 1.5);
     }
@@ -48,7 +48,7 @@ class CastingTest extends AbstractTest
      */
     public function testStringCasting()
     {
-        $this->parse('$a = (string) 3;')
+        $this->parse('$a = (string)3;')
             ->assertVariableSame('$a', '3');
     }
 
@@ -57,7 +57,7 @@ class CastingTest extends AbstractTest
      */
     public function testArrayCasting()
     {
-        $this->parse('$a = 3; $b = (array) $a; $c = $b[0];')
+        $this->parse('$a = 3; $b = (array)$a; $c = $b[0];')
             ->assertVariableSame('$c', 3);
     }
 
@@ -66,7 +66,7 @@ class CastingTest extends AbstractTest
      */
     public function testObjectCasting()
     {
-        $this->parse('$a = [ "a" => 1, "b" => 2, "c" => 3 ]; $b = (object) $a; $b = $a->b;')
-            ->assertVariableSame('$b', 2);
+        $this->parse('$a = ["a" => 1, "b" => 2, "c" => 3]; $b = (object)$a; $c = $b->c;')
+            ->assertVariableSame('$c', 3);
     }
 }
