@@ -9,58 +9,59 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\InventoryApi\Api\GetSourceItemsBySkuInterface;
 use Owebia\SharedPhpConfig\Model\Wrapper;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
 
 class Product extends SourceWrapper
 {
     /**
-     * @var array
+     * @var string[]
      */
-    protected $additionalAttributes = [
-        'attribute_set', 'stock_item',
-        'category_id', 'category', 'category_ids', 'categories',
+    protected array $additionalAttributes = [
+        'attribute_set',
+        'stock_item',
+        'category_id',
+        'category',
+        'category_ids',
+        'categories',
     ];
 
     /**
-     * @var \Magento\Catalog\Model\ProductRepository
+     * @var ProductRepositoryInterface
      */
-    protected $productRepository;
+    private ProductRepositoryInterface $productRepository;
 
     /**
      * @var array
      */
-    protected $attributes = null;
+    protected array $attributes = [];
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Catalog\Model\ProductRepository $productRepository
+     * @param ProductRepositoryInterface $productRepository
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Catalog\Model\ProductRepository $productRepository,
+        ProductRepositoryInterface $productRepository,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->productRepository = $productRepository;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return ProductInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        if ($this->data instanceof \Magento\Catalog\Api\Data\ProductInterface) {
+        if ($this->data instanceof ProductInterface) {
             return $this->data;
         }
-        return $this->productRepository
-            ->getById($this->data['id']);
+        return $this->productRepository->getById($this->data['id']);
     }
 
     /**
@@ -70,13 +71,16 @@ class Product extends SourceWrapper
      */
     public function load()
     {
-        $this->source = $this->productRepository
-            ->getById($this->entity_id);
+        $this->source = $this->productRepository->getById($this->entity_id);
         $this->cache->setData([]);
         return $this;
     }
 
-    protected function loadIfRequired($attributeCode)
+    /**
+     * @param string $attributeCode
+     * @return $this
+     */
+    protected function loadIfRequired(string $attributeCode)
     {
         if (!isset($this->attributes)) {
             $source = $this->getSource();
@@ -91,27 +95,27 @@ class Product extends SourceWrapper
 
     /**
      * @param string $attributeCode
-     * @return string | null
+     * @return string|null
      */
-    public function getAttributeText($attributeCode)
+    public function getAttributeText($attributeCode): ?string
     {
         $this->loadIfRequired($attributeCode);
         /** @var \Magento\Catalog\Api\Data\Product $product */
         $product = $this->getSource();
-        return $this->wrap($product->getAttributeText($attributeCode));
+        return $this->wrapperContext->wrap($product->getAttributeText($attributeCode));
     }
 
     /**
      * @return \Magento\InventoryApi\Api\Data\SourceItemInterface[]
      */
-    public function getSourceItems()
+    public function getSourceItems(): array
     {
         /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
         $product = $this->getSource();
-        return $this->wrap(
+        return $this->wrapperContext->wrap(
             // Not available in old Magento2 versions
             // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
-            $this->objectManager->get('Magento\InventoryApi\Api\GetSourceItemsBySkuInterface')
+            $this->wrapperContext->get(GetSourceItemsBySkuInterface::class)
                 ->execute(
                     $product->getSku()
                 )
@@ -119,32 +123,32 @@ class Product extends SourceWrapper
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
         switch ($key) {
             case 'attribute_set':
-                return $this->createWrapper(
-                    [ 'id' => (int) $this->{'attribute_set_id'} ],
-                    Wrapper\ProductAttributeSet::class
+                return $this->wrapperContext->createWrapper(
+                    Wrapper\ProductAttributeSet::class,
+                    ['data' => ['id' => (int)$this->{'attribute_set_id'}]]
                 );
             case 'stock_item':
-                return $this->createWrapper(
-                    [ 'product_id' => (int) $this->{'entity_id'} ],
-                    Wrapper\ProductStockItem::class
+                return $this->wrapperContext->createWrapper(
+                    Wrapper\ProductStockItem::class,
+                    ['data' => ['product_id' => (int)$this->{'entity_id'}]]
                 );
             case 'category_id':
                 return $this->category_ids[0] ?? null;
             case 'category':
                 return $this->categories[0] ?? null;
             case 'category_ids':
-                /** @var \Magento\Catalog\Api\Data\Product $product */
+                /** @var ProductInterface $product */
                 $product = $this->getSource();
                 return $this->getSource()->getCategoryIds();
             case 'categories':
-                /** @var \Magento\Catalog\Api\Data\Product $product */
+                /** @var ProductInterface $product */
                 $product = $this->getSource();
                 $categories = [];
                 $collection = $product->getCategoryCollection()

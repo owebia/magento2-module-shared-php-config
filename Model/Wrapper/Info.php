@@ -9,30 +9,27 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Framework\HTTP\PhpEnvironment\Request;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class Info extends ArrayWrapper
 {
     /**
-     * @var array
+     * @var string[]
      */
-    protected $additionalAttributes = [ 'memory_limit', 'memory_usage' ];
+    protected array $additionalAttributes = ['memory_limit', 'memory_usage'];
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Magento\Framework\HTTP\PhpEnvironment\Request $request
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
+     * @param Request $request
+     * @param WrapperContext $wrapperContext
      * @param string $carrierCode
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Magento\Framework\HTTP\PhpEnvironment\Request $request,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
+        Request $request,
+        WrapperContext $wrapperContext,
         $carrierCode = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, [
+        parent::__construct($wrapperContext, [
             'server_os'       => PHP_OS,
             'server_software' => $request->getServerValue('SERVER_SOFTWARE'),
             'php_version'     => PHP_VERSION,
@@ -41,10 +38,10 @@ class Info extends ArrayWrapper
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
         switch ($key) {
             case 'memory_limit':

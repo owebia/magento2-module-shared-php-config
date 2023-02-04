@@ -9,58 +9,41 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class Customer extends SourceWrapper
 {
     /**
-     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     * @var CustomerRepositoryInterface
      */
-    protected $customerRepository;
+    private CustomerRepositoryInterface $customerRepository;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+        CustomerRepositoryInterface $customerRepository,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->customerRepository = $customerRepository;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return CustomerInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        $quoteWrapper = $this->registry->get('quote');
-        if (isset($quoteWrapper) && $quoteWrapper->getSource() instanceof \Magento\Quote\Model\Quote) {
-            $quote = $quoteWrapper->getSource();
-            if ($customer = $quote->getCustomer()) {
-                return $customer;
-            }
+        $quote = $this->wrapperContext->getQuote();
+        if ($quote && ($customer = $quote->getCustomer())) {
+            return $customer;
         }
 
-        if ($this->isBackendOrder()) { // For backend orders
-            $customerId = $this->objectManager
-                ->get(\Magento\Backend\Model\Session\Quote::class)
-                ->getQuote()
-                ->getCustomerId();
-        } else {
-            $customerId = $this->objectManager
-                ->get(\Magento\Customer\Model\Session::class)
-                ->getCustomerId();
-        }
-
-        return !$customerId ? null : $this->customerRepository
-            ->getById($customerId);
+        return null;
     }
 }

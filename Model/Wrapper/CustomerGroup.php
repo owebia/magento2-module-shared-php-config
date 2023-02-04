@@ -9,54 +9,39 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Customer\Api\Data\GroupInterface;
+use Magento\Customer\Api\GroupRepositoryInterface;
+use Magento\Framework\DataObject;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class CustomerGroup extends SourceWrapper
 {
     /**
-     * @var \Magento\Customer\Api\GroupRepositoryInterface
+     * @var GroupRepositoryInterface
      */
-    protected $groupRepository;
+    private GroupRepositoryInterface $groupRepository;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Customer\Api\GroupRepositoryInterface $groupRepository
+     * @param GroupRepositoryInterface $groupRepository
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Customer\Api\GroupRepositoryInterface $groupRepository,
+        GroupRepositoryInterface $groupRepository,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->groupRepository = $groupRepository;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return GroupInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        $quoteWrapper = $this->registry->get('quote');
-        if (isset($quoteWrapper) && $quoteWrapper->getSource() instanceof \Magento\Quote\Model\Quote) {
-            $quote = $quoteWrapper->getSource();
-            $customerGroupId = $quote->getCustomerGroupId();
-        } elseif ($this->isBackendOrder()) { // For backend orders
-            $customerGroupId = $this->objectManager
-                ->get(\Magento\Backend\Model\Session\Quote::class)
-                ->getQuote()
-                ->getCustomerGroupId();
-        } else {
-            $customerGroupId = $this->objectManager
-                ->get(\Magento\Customer\Model\Session::class)
-                ->getCustomerGroupId();
-        }
-
-        return $this->groupRepository
-            ->getById($customerGroupId);
+        $quote = $this->wrapperContext->getQuote();
+        $customerGroupId = $quote ? $quote->getCustomerGroupId() : null;
+        return $customerGroupId ? $this->groupRepository->getById($customerGroupId) : null;
     }
 }

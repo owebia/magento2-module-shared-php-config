@@ -9,14 +9,15 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
-use Owebia\SharedPhpConfig\Model\Wrapper;
+use Magento\Framework\DataObject;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
 
 abstract class AbstractWrapper
 {
     /**
-     * @var \Magento\Framework\DataObject
+     * @var DataObject
      */
-    protected $cache = null;
+    protected $cache;
 
     /**
      * @var mixed
@@ -26,57 +27,30 @@ abstract class AbstractWrapper
     /**
      * @var array
      */
-    protected $aliasMap = [];
+    protected array $aliasMap = [];
 
     /**
      * @var array
      */
-    protected $additionalAttributes = [];
+    protected array $additionalAttributes = [];
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Backend\Model\Auth\Session
-     */
-    protected $backendAuthSession;
-
-    /**
-     * @var \Magento\Framework\Escaper
-     */
-    protected $escaper;
-
-    /**
-     * @var \Owebia\SharedPhpConfig\Helper\Registry
-     */
-    protected $registry;
-
-    /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        $this->objectManager = $objectManager;
-        $this->backendAuthSession = $backendAuthSession;
-        $this->escaper = $escaper;
-        $this->registry = $registry;
-        $this->logger = $this->objectManager->get(\Owebia\SharedPhpConfig\Logger\Logger::class);
+        $this->wrapperContext = $wrapperContext;
         $this->data = $data;
-        $this->cache = $objectManager->create(\Magento\Framework\DataObject::class);
+        $this->cache = $this->wrapperContext->create(DataObject::class);
     }
 
-    protected function isBackendOrder()
+    /**
+     * @return bool
+     */
+    protected function isBackendOrder(): bool
     {
         return $this->backendAuthSession->isLoggedIn();
     }
@@ -84,7 +58,7 @@ abstract class AbstractWrapper
     /**
      * return array
      */
-    protected function getAdditionalData()
+    protected function getAdditionalData(): array
     {
         $data = [];
         foreach ($this->additionalAttributes as $k) {
@@ -115,48 +89,23 @@ abstract class AbstractWrapper
             }
             return var_export($value, true);
         } elseif (is_object($value)) {
-            $variableName = isset($variableName) ? $variableName : 'obj';
+            $variableName = $variableName ?? 'obj';
             return "/** @var \\" . get_class($value) . " */ \$$variableName";
         } else {
             return $value;
         }
     }
 
-    public function getStoreId()
-    {
-        return $this->registry->get('request')
-            ->__get('store_id');
-    }
-
-    /**
-     * @param mixed $data
-     * @param string $className
-     * @return \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper
-     */
-    protected function createWrapper($data, $className = null)
-    {
-        return $this->registry->create($className ? $className : Wrapper\SourceWrapper::class, [ 'data' => $data ]);
-    }
-
-    /**
-     * @param mixed $data
-     * @return mixed
-     */
-    protected function wrap($data)
-    {
-        return $this->registry->wrap($data);
-    }
-
     /**
      * @return array
      */
-    abstract protected function getKeys();
+    abstract protected function getKeys(): array;
 
     /**
      * @param string $key
      * @return mixed
      */
-    abstract protected function loadData($key);
+    abstract protected function loadData(string $key);
 
     /**
      * @param mixed $value
@@ -165,8 +114,8 @@ abstract class AbstractWrapper
      */
     protected function helpValue($value, $key)
     {
-        $value = $this->escaper->escapeHtml(
-            $this->convertToString($this->wrap($value), $key)
+        $value = $this->wrapperContext->getEscaper()->escapeHtml(
+            $this->convertToString($this->wrapperContext->wrap($value), $key)
         );
         $value = str_replace("\n", "\n    ", $value);
         return "    " . $this->convertToString($key) . " => " . $value;
@@ -208,7 +157,7 @@ abstract class AbstractWrapper
             return $this->__get($this->aliasMap[$name]);
         }
         if (!$this->cache->hasData($name)) {
-            $value = $this->wrap($this->loadData($name));
+            $value = $this->wrapperContext->wrap($this->loadData($name));
             $this->cache->setData($name, $value);
         }
         return $this->cache->getData($name);

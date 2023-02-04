@@ -9,12 +9,18 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Quote\Model\Quote as QuoteModel;
+use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magento\Tax\Model\Config as TaxConfig;
+use Owebia\SharedPhpConfig\Model\Wrapper\Request as RequestWrapper;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class Quote extends SourceWrapper
 {
     /**
-     * @var array
+     * @var string[]
      */
-    protected $additionalAttributes = [
+    protected array $additionalAttributes = [
         '__subtotal_excl_tax',
         '__subtotal_incl_tax',
         '__subtotal_with_discount_excl_tax',
@@ -22,47 +28,49 @@ class Quote extends SourceWrapper
     ];
 
     /**
-     * @var \Magento\Tax\Model\Config
+     * @var TaxConfig
      */
-    protected $taxConfig;
+    private TaxConfig $taxConfig;
 
     /**
-     * @param \Magento\Tax\Model\Config $taxConfig
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
+     * @var RequestWrapper|null
+     */
+    private ?RequestWrapper $requestWrapper;
+
+    /**
+     * @param TaxConfig $taxConfig
+     * @param WrapperContext $wrapperContext
+     * @param RequestWrapper|null $requestWrapper
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Tax\Model\Config $taxConfig,
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
+        TaxConfig $taxConfig,
+        WrapperContext $wrapperContext,
+        RequestWrapper $requestWrapper = null,
         $data = null
     ) {
-        parent::__construct(
-            $objectManager,
-            $backendAuthSession,
-            $escaper,
-            $registry,
-            $data
-        );
         $this->taxConfig = $taxConfig;
+        $this->requestWrapper = $requestWrapper;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Quote\Model\Quote|null
+     * @return QuoteModel|null
      */
-    protected function loadSource()
+    protected function getQuote(): ?QuoteModel
     {
-        // Get quote from \Magento\Quote\Model\Quote\Address\RateRequest if possible
-        $requestWrapper = $this->registry->get('request');
-        if (isset($requestWrapper)
-            && $requestWrapper->getSource() instanceof \Magento\Quote\Model\Quote\Address\RateRequest
-        ) {
-            $request = $requestWrapper->getSource();
+        return $this->getSource();
+    }
+
+    /**
+     * @return QuoteModel|null
+     */
+    protected function loadSource(): ?object
+    {
+        // Get quote from RateRequest if possible
+        if ($this->requestWrapper && $this->requestWrapper->getSource() instanceof RateRequest) {
+            /** @var RateRequest $request */
+            $request = $this->requestWrapper->getSource();
             if ($items = $request->getAllItems()) {
                 foreach ($items as $item) {
                     if ($quote = $item->getQuote()) {
@@ -72,28 +80,39 @@ class Quote extends SourceWrapper
             }
         }
 
-        if ($this->isBackendOrder()) { // For backend orders
-            $session = $this->objectManager
-                ->get(\Magento\Backend\Model\Session\Quote::class);
-        } else {
-            $session = $this->objectManager
-                ->get(\Magento\Checkout\Model\Session::class);
-        }
-
-        return $session->getQuote();
+        return $this->wrapperContext->getQuote();
     }
 
-    protected function calculateSubtotals()
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    protected function loadData(string $key)
     {
-        $subtotals = [
-            '__subtotal_excl_tax',
-            '__subtotal_incl_tax',
-            '__subtotal_with_discount_excl_tax',
-            '__subtotal_with_discount_incl_tax',
-        ];
+        switch ($key) {
+            case '__subtotal_excl_tax':
+            case '__subtotal_incl_tax':
+            case '__subtotal_with_discount_excl_tax':
+            case '__subtotal_with_discount_incl_tax':
+                if (!isset($this->cache['__subtotal_excl_tax'])) {
+                    $this->calculateSubtotals();
+                }
+                return $this->cache[$key] ?? null;
+        }
 
-        $requestWrapper = $this->registry->get('request');
-        $request = $requestWrapper->getSource();
+        return parent::loadData($key);
+    }
+
+    /**
+     * Calculate subtotals
+     */
+    private function calculateSubtotals(): void
+    {
+        if (!$this->requestWrapper) {
+            return;
+        }
+
+        $request = $this->requestWrapper->getSource();
         $items = $request->getAllItems();
         if (!is_array($items)) {
             return;
@@ -111,7 +130,7 @@ class Quote extends SourceWrapper
         foreach ($items as $item) {
             /*$type = $item->getProduct()->getTypeId();
             $parentItemId = $item->getParentItemId();
-            $parentItem = isset($items[$parentItemId]) ? $items[$parentItemId] : null;
+            $parentItem = $items[$parentItemId] ?? null;
             $parentType = isset($parentItem) ? $parentItem->getProduct()->getTypeId() : null;*/
 
             $baseRowTotalExclTax = $item->getBaseRowTotal();
@@ -130,25 +149,5 @@ class Quote extends SourceWrapper
         $this->cache['__subtotal_incl_tax'] = $subtotalInclTax;
         $this->cache['__subtotal_with_discount_excl_tax'] = $subtotalWithDiscountExclTax;
         $this->cache['__subtotal_with_discount_incl_tax'] = $subtotalWithDiscountInclTax;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
-     */
-    protected function loadData($key)
-    {
-        switch ($key) {
-            case '__subtotal_excl_tax':
-            case '__subtotal_incl_tax':
-            case '__subtotal_with_discount_excl_tax':
-            case '__subtotal_with_discount_incl_tax':
-                if (!isset($this->cache['__subtotal_excl_tax'])) {
-                    $this->calculateSubtotals();
-                }
-                return $this->cache[$key] ?? null;
-        }
-
-        return parent::loadData($key);
     }
 }

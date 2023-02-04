@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Framework\Exception\LocalizedException;
+
 class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
 {
     /**
@@ -40,7 +42,7 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value): void
     {
-        throw new \Magento\Framework\Exception\LocalizedException(__("Wrapper can not be modified"));
+        throw new LocalizedException(__("Wrapper can not be modified"));
     }
 
     /**
@@ -51,22 +53,22 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
     #[\ReturnTypeWillChange]
     public function offsetUnset($offset): void
     {
-        throw new \Magento\Framework\Exception\LocalizedException(__("Wrapper can not be modified"));
+        throw new LocalizedException(__("Wrapper can not be modified"));
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
-        return $this->data[$key];
+        return $this->data[$key] ?? null;
     }
 
     /**
      * @return array
      */
-    protected function getKeys()
+    protected function getKeys(): array
     {
         return array_keys($this->data);
     }

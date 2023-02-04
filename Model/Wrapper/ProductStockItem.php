@@ -9,39 +9,36 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\CatalogInventory\Api\Data\StockItemInterface;
+use Magento\CatalogInventory\Api\StockRegistryInterface;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class ProductStockItem extends SourceWrapper
 {
     /**
-     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
+     * @var StockRegistryInterface
      */
-    protected $stockRegistry;
+    private StockRegistryInterface $stockRegistry;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
+     * @param StockRegistryInterface $stockRegistry
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
+        StockRegistryInterface $stockRegistry,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->stockRegistry = $stockRegistry;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return StockItemInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        return $this->stockRegistry
-            ->getStockItem($this->data['product_id']);
+        return $this->stockRegistry->getStockItem($this->data['product_id']);
     }
 }

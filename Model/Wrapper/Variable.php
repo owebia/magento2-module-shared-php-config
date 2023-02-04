@@ -9,17 +9,52 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Variable\Model\VariableFactory;
+use Owebia\SharedPhpConfig\Model\Wrapper\Request as RequestWrapper;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class Variable extends SourceWrapper
 {
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @var VariableFactory
      */
-    protected function loadSource()
+    private VariableFactory $variableFactory;
+
+    /**
+     * @var RequestWrapper|null
+     */
+    private ?RequestWrapper $requestWrapper;
+
+    /**
+     * @param VariableFactory $variableFactory
+     * @param WrapperContext $wrapperContext
+     * @param RequestWrapper|null $requestWrapper
+     * @param mixed $data
+     */
+    public function __construct(
+        VariableFactory $variableFactory,
+        WrapperContext $wrapperContext,
+        RequestWrapper $requestWrapper = null,
+        $data = null
+    ) {
+        $this->variableFactory = $variableFactory;
+        $this->requestWrapper = $requestWrapper;
+        parent::__construct($wrapperContext, $data);
+    }
+
+    /**
+     * @return \Magento\Variable\Model\Variable|null
+     */
+    protected function loadSource(): ?object
     {
-        $source = $this->objectManager
-            ->create(\Magento\Variable\Model\Variable::class);
+        /** @var \Magento\Variable\Model\Variable $source */
+        $source = $this->variableFactory->create();
         if (isset($this->data['code'])) {
-            $source->setStoreId($this->getStoreId())
+            $storeId = $this->requestWrapper
+                && ($request = $this->requestWrapper->getRequest())
+                ? $request->getStoreId()
+                : null;
+            $source->setStoreId($storeId)
                 ->loadByCode($this->data['code']);
         }
 
@@ -27,26 +62,26 @@ class Variable extends SourceWrapper
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
         if (isset($this->data['code'])) {
             return parent::loadData($key);
         }
 
-        return $this->createWrapper(
-            [ 'code' => $key ],
-            static::class
+        return $this->wrapperContext->createWrapper(
+            static::class,
+            ['data' => ['code' => $key]]
         );
     }
 
     /**
      * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::getAdditionalData()
+     * @see AbstractWrapper::getAdditionalData()
      */
-    protected function getAdditionalData()
+    protected function getAdditionalData(): array
     {
         $data = parent::getAdditionalData();
         if (!isset($this->data['code'])) {

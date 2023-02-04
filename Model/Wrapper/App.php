@@ -9,53 +9,51 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class App extends SourceWrapper
 {
     /**
      * @var array
      */
-    protected $additionalAttributes = [
+    protected array $additionalAttributes = [
         'area_code',
     ];
 
     /**
-     * @var \Magento\Framework\App\State
+     * @var State
      */
-    protected $appState;
+    private State $appState;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Framework\App\State $appState
+     * @param State $appState
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Framework\App\State $appState,
+        State $appState,
+        WrapperContext $wrapperContext,
         $data = []
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->appState = $appState;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return State|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
         return $this->appState;
     }
 
     /**
-     * {@inheritDoc}
-     * @see Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
         switch ($key) {
             case 'area_code':
@@ -65,18 +63,27 @@ class App extends SourceWrapper
         }
     }
 
-    public function getAreaCode()
+    /**
+     * @return string
+     */
+    public function getAreaCode(): string
     {
         return $this->appState->getAreaCode();
     }
 
-    public function isAdminArea()
+    /**
+     * @return bool
+     */
+    public function isAdminArea(): bool
     {
-        return $this->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML;
+        return $this->getAreaCode() === Area::AREA_ADMINHTML;
     }
 
-    public function isFrontendArea()
+    /**
+     * @return bool
+     */
+    public function isFrontendArea(): bool
     {
-        return $this->getAreaCode() === \Magento\Framework\App\Area::AREA_WEBAPI_REST;
+        return $this->getAreaCode() === Area::AREA_WEBAPI_REST;
     }
 }

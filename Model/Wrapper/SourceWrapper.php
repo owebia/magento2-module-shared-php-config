@@ -9,44 +9,43 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Framework\DataObject;
+
 class SourceWrapper extends AbstractWrapper
 {
     /**
-     * @var \Magento\Framework\DataObject|bool
+     * @var object|null
      */
-    protected $source = false;
+    protected ?object $source;
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return object|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
         return $this->data;
     }
 
     /**
-     * @return \Magento\Framework\DataObject
+     * @return object|null
      */
-    public function getSource()
+    public function getSource(): ?object
     {
-        if ($this->source === false) {
-            $this->source = $this->loadSource();
-        }
-        return $this->source;
+        return $this->source ??= $this->loadSource();
     }
 
     /**
      * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::getKeys()
+     * @see AbstractWrapper::getKeys()
      */
-    protected function getKeys()
+    protected function getKeys(): array
     {
         $source = $this->getSource();
-        if ($source instanceof \Magento\Framework\DataObject) {
+        if ($source instanceof DataObject) {
             return array_keys($source->getData());
         } elseif ($source instanceof \Magento\Framework\Api\AbstractSimpleObject) {
             // Not efficient but only for debug
-            // see method _underscore in \Magento\Framework\DataObject
+            // see method _underscore in DataObject
             return array_keys($source->__toArray());
         } else {
             return [];
@@ -55,9 +54,9 @@ class SourceWrapper extends AbstractWrapper
 
     /**
      * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::help()
+     * @see AbstractWrapper::help()
      */
-    public function help()
+    public function help(): string
     {
         $source = $this->getSource();
         if ($source) {
@@ -69,16 +68,16 @@ class SourceWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
         $source = $this->getSource();
         if (!$source) {
             return null;
         }
-        if ($source instanceof \Magento\Framework\DataObject) {
+        if ($source instanceof DataObject) {
             return $source->getData($key);
         } elseif ($source instanceof \Magento\Framework\Api\AbstractSimpleObject) {
             $method = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));

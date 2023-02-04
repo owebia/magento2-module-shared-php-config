@@ -9,39 +9,36 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Eav\Api\Data\AttributeSetInterface;
+use Magento\Eav\Api\AttributeSetRepositoryInterface;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class ProductAttributeSet extends SourceWrapper
 {
     /**
-     * @var \Magento\Eav\Api\AttributeSetRepositoryInterface
+     * @var AttributeSetRepositoryInterface
      */
-    protected $attributeSetRepository;
+    private AttributeSetRepositoryInterface $attributeSetRepository;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRepository
+     * @param AttributeSetRepositoryInterface $attributeSetRepository
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Eav\Api\AttributeSetRepositoryInterface $attributeSetRepository,
+        AttributeSetRepositoryInterface $attributeSetRepository,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->attributeSetRepository = $attributeSetRepository;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return AttributeSetInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        return $this->attributeSetRepository
-            ->get($this->data['id']);
+        return $this->attributeSetRepository->get($this->data['id']);
     }
 }

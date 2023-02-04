@@ -9,54 +9,49 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Catalog\Api\Data\CategoryInterface;
+use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class Category extends SourceWrapper
 {
     /**
-     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
+     * @var CategoryRepositoryInterface
      */
-    protected $categoryRepository;
+    private CategoryRepositoryInterface $categoryRepository;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param WrapperContext $wrapperContext
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
+        CategoryRepositoryInterface $categoryRepository,
+        WrapperContext $wrapperContext,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->categoryRepository = $categoryRepository;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return CategoryInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        if ($this->data instanceof \Magento\Catalog\Api\Data\CategoryInterface) {
-            return $this->data;
-        }
-        return $this->categoryRepository
-            ->get($this->data['id']);
+        return $this->data instanceof CategoryInterface
+            ? $this->data
+            : $this->categoryRepository->get($this->data['id']);
     }
 
     /**
      * Load source model
      *
-     * @return \Owebia\SharedPhpConfig\Model\Wrapper\Category
+     * @return $this
      */
     public function load()
     {
-        $this->source = $this->categoryRepository
-            ->get($this->entity_id);
+        $this->source = $this->categoryRepository->get($this->entity_id);
         $this->cache->setData([]);
         return $this;
     }

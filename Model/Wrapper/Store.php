@@ -9,59 +9,69 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Api\StoreRepositoryInterface;
+use Owebia\SharedPhpConfig\Model\Wrapper\Request as RequestWrapper;
+use Owebia\SharedPhpConfig\Model\WrapperContext;
+
 class Store extends SourceWrapper
 {
     /**
-     * @var array
+     * @var string[]
      */
-    protected $aliasMap = [
+    protected array $aliasMap = [
         'id' => 'store_id'
     ];
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected $additionalAttributes = [ 'name', 'address', 'phone' ];
+    protected array $additionalAttributes = ['name', 'address', 'phone'];
 
     /**
-     * @var \Magento\Store\Api\StoreRepositoryInterface
+     * @var StoreRepositoryInterface
      */
-    protected $storeRepository;
+    private StoreRepositoryInterface $storeRepository;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
-     * @param \Magento\Framework\Escaper $escaper
-     * @param \Owebia\SharedPhpConfig\Helper\Registry $registry
-     * @param \Magento\Store\Api\StoreRepositoryInterface $storeRepository
+     * @var RequestWrapper|null
+     */
+    private ?RequestWrapper $requestWrapper;
+
+    /**
+     * @param StoreRepositoryInterface $storeRepository
+     * @param WrapperContext $wrapperContext
+     * @param RequestWrapper|null $requestWrapper
      * @param mixed $data
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Backend\Model\Auth\Session $backendAuthSession,
-        \Magento\Framework\Escaper $escaper,
-        \Owebia\SharedPhpConfig\Helper\Registry $registry,
-        \Magento\Store\Api\StoreRepositoryInterface $storeRepository,
+        StoreRepositoryInterface $storeRepository,
+        WrapperContext $wrapperContext,
+        RequestWrapper $requestWrapper = null,
         $data = null
     ) {
-        parent::__construct($objectManager, $backendAuthSession, $escaper, $registry, $data);
         $this->storeRepository = $storeRepository;
+        $this->requestWrapper = $requestWrapper;
+        parent::__construct($wrapperContext, $data);
     }
 
     /**
-     * @return \Magento\Framework\DataObject|null
+     * @return StoreInterface|null
      */
-    protected function loadSource()
+    protected function loadSource(): ?object
     {
-        return $this->storeRepository
-            ->getById($this->getStoreId());
+        $storeId = $this->requestWrapper
+            && ($request = $this->requestWrapper->getRequest())
+            ? $request->getStoreId()
+            : null;
+        return $this->storeRepository->getById($storeId);
     }
 
     /**
-     * {@inheritDoc}
-     * @see \Owebia\SharedPhpConfig\Model\Wrapper\AbstractWrapper::loadData()
+     * @param string $key
+     * @return mixed
      */
-    protected function loadData($key)
+    protected function loadData(string $key)
     {
         switch ($key) {
             case 'name':
