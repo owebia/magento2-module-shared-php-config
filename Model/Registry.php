@@ -103,6 +103,14 @@ class Registry implements RegistryInterface
     }
 
     /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @param string $name
      * @return mixed
      */

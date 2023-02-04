@@ -117,7 +117,7 @@ class Evaluator
      */
     private function error($msg, $expr)
     {
-        $trace = debug_backtrace(false);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $this->errors[] = [
             'level' => 'ERROR',
             'msg' => $msg,
