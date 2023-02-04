@@ -5,6 +5,8 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Logger;
 
 class Handler extends \Magento\Framework\Logger\Handler\Base

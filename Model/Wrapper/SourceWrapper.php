@@ -5,6 +5,8 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 class SourceWrapper extends AbstractWrapper
