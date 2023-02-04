@@ -3,6 +3,6 @@ Help,Help,module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.ph
 Reduce,Reduce,module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.php
 "View Debug","View Debug",module,Owebia_SharedPhpConfig,Block/System/Config/Form/Field/Config.php
 
-"Unsupported type %1","Unsupported type %1",module,Owebia_SharedPhpConfig,Helper/Registry.php
-
 "Wrapper can not be modified","Wrapper can not be modified",module,Owebia_SharedPhpConfig,Model/Wrapper/ArrayWrapper.php
+
+"Unsupported type %1","Unsupported type %1",module,Owebia_SharedPhpConfig,Model/WrapperContext.php
