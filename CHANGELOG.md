@@ -4,12 +4,13 @@
 Module: `owebia/magento2-module-shared-php-config`
 
 ### 6.0.0-beta (04 Feb, 2023)
-- breaking changes: many class constructors
-- improve code: remove support for PHP < 7.4
-- improve code: add php doc
-- improve code: add type declarations
-- improve code: use modern syntax
-- improve code: reduce class dependencies
+- ⚠️ breaking changes: several constructor signature changes
+- ⚠️ breaking changes: several method signature changes
+- improve code quality: remove support for PHP < 7.4
+- improve code quality: add php doc
+- improve code quality: add type declarations
+- improve code quality: use modern syntax
+- improve code quality: reduce class dependencies
 - new api `Api\FunctionProviderInterface`
 - new api `Api\FunctionProxyInterface`
 - new api `Api\ParserContextInterface`
