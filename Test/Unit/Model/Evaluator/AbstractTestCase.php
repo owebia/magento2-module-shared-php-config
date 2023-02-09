@@ -5,19 +5,21 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator;
 
 use Magento\Framework\ObjectManagerInterface;
 use Owebia\SharedPhpConfig\Model\Evaluator;
-use Owebia\SharedPhpConfig\Model\FunctionProxy;
+use Owebia\SharedPhpConfig\Model\FunctionProviderPool;
 use Owebia\SharedPhpConfig\Model\Parser;
+use Owebia\SharedPhpConfig\Model\ParserContext;
 use Owebia\SharedPhpConfig\Model\Registry;
 use Owebia\SharedPhpConfig\Model\Wrapper\SourceWrapper;
 use Owebia\SharedPhpConfig\Model\WrapperContext;
-use Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\ParserContext;
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractTest extends TestCase
+abstract class AbstractTestCase extends TestCase
 {
     /**
      * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
@@ -30,14 +32,14 @@ abstract class AbstractTest extends TestCase
     protected $config = '';
 
     /**
-     * @var \Owebia\SharedPhpConfig\Model\Parser
+     * @var Parser
      */
-    protected $parser;
+    protected Parser $parser;
 
     /**
-     * @var \Owebia\SharedPhpConfig\Model\ParserContext
+     * @var ParserContext
      */
-    protected $parserContext;
+    protected ParserContext $parserContext;
 
     protected function setUp(): void
     {
@@ -48,7 +50,7 @@ abstract class AbstractTest extends TestCase
     /**
      * @return $this
      */
-    protected function init()
+    protected function init(): self
     {
         $objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
             ->disableOriginalConstructor()
@@ -69,31 +71,14 @@ abstract class AbstractTest extends TestCase
                 }
                 return $res;
             }));
-        $registry = $this->objectManager->getObject(Registry::class, [
-            'wrapperContext' => $wrapperContext,
-        ]);
-        $functionProxy = $this->objectManager->getObject(FunctionProxy::class, [
-            'functionProviders' => [],
-        ]);
         $this->parserContext = $this->objectManager->getObject(ParserContext::class, [
             'wrapperContext' => $wrapperContext,
-            'functionProxy' => $functionProxy,
-            'registry' => $registry,
+            'functionProviderPool' => $this->objectManager->getObject(FunctionProviderPool::class),
+            'registry' => $this->objectManager->getObject(Registry::class),
         ]);
-        $evaluatorFactory = $this->getMockBuilder(Evaluator::class . 'Factory')
-            ->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
-        $evaluatorFactory->expects($this->any())
-            ->method('create')
-            ->will($this->returnCallback(fn($args) => $this->objectManager->getObject(Evaluator::class, $args + [
-                'wrapperContext' => $wrapperContext,
-                'functionProxy' => $functionProxy,
-                'registry' => $registry,
-            ])));
         $this->parser = $this->objectManager->getObject(Parser::class, [
             'parserContext' => $this->parserContext,
-            'evaluatorFactory' => $evaluatorFactory,
+            'evaluator' => $this->objectManager->getObject(Evaluator::class, ['wrapperContext' => $wrapperContext]),
             'phpParserFactory' => $this->objectManager->getObject(\PhpParser\ParserFactory::class),
         ]);
         $this->config = '';
@@ -104,7 +89,7 @@ abstract class AbstractTest extends TestCase
      * @param string $configuration
      * @return $this
      */
-    protected function parse($configuration)
+    protected function parse(string $configuration): self
     {
         $this->init();
         $this->append($configuration);
@@ -115,17 +100,17 @@ abstract class AbstractTest extends TestCase
      * @param string $configuration
      * @return $this
      */
-    protected function append($configuration)
+    protected function append(string $configuration): self
     {
         $this->config .= $configuration . "\n";
-        $this->parser->parse($configuration, false);
+        $this->parser->parse($this->parserContext, $configuration);
         return $this;
     }
 
     /**
      * @return $this
      */
-    protected function dump()
+    protected function dump(): self
     {
         print_r("\n" . $this->config);
         print_r($this->parserContext->getRegistry());
@@ -137,7 +122,7 @@ abstract class AbstractTest extends TestCase
      * @param mixed $value
      * @return $this
      */
-    protected function assertVariableSame($variableName, $value)
+    protected function assertVariableSame(string $variableName, $value): self
     {
         $this->assertSame(
             $this->parserContext->getRegistry()->getGlobal(ltrim($variableName, '$')),

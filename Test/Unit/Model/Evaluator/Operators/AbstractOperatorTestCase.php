@@ -5,8 +5,12 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
-abstract class AbstractTest extends \Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\AbstractTest
+use Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\AbstractTestCase;
+
+abstract class AbstractOperatorTestCase extends AbstractTestCase
 {
 }

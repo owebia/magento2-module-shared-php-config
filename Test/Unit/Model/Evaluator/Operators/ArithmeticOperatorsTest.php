@@ -5,13 +5,15 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
  * Test Arithmetic Operators
  * https://www.php.net/manual/en/language.operators.arithmetic.php
  */
-class ArithmeticOperatorsTest extends AbstractTest
+class ArithmeticOperatorsTest extends AbstractOperatorTestCase
 {
     /**
      * Test Identity

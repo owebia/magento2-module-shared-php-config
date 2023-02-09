@@ -5,6 +5,8 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
@@ -12,7 +14,7 @@ namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
  * https://www.php.net/manual/en/language.operators.assignment.php
  * https://www.php.net/manual/en/language.operators.bitwise.php
  */
-class AssignmentBitwiseOperatorsTest extends AbstractTest
+class AssignmentBitwiseOperatorsTest extends AbstractOperatorTestCase
 {
     /**
      * Test Bitwise And

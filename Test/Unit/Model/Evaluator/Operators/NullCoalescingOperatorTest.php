@@ -5,13 +5,15 @@
  * See COPYING.txt for license details.
  */
 
-namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator;
+declare(strict_types=1);
+
+namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
  * Test Null Coalescing Operator
  * https://www.php.net/manual/en/migration70.new-features.php#migration70.new-features.null-coalesce-op
  */
-class NullCoalescingOperatorTest extends AbstractTest
+class NullCoalescingOperatorTest extends AbstractOperatorTestCase
 {
     /**
      * Test Null Coalescing Operator

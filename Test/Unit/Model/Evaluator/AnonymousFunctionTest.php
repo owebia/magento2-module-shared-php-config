@@ -5,13 +5,15 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator;
 
 /**
  * Test Anonymous functions
  * https://www.php.net/manual/en/functions.anonymous.php
  */
-class AnonymousFunctionTest extends AbstractTest
+class AnonymousFunctionTest extends AbstractTestCase
 {
     /**
      * Test Anonymous functions

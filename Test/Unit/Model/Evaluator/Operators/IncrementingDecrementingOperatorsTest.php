@@ -5,13 +5,15 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator\Operators;
 
 /**
  * Test Incrementing/Decrementing Operators
  * https://www.php.net/manual/en/language.operators.increment.php
  */
-class IncrementingDecrementingOperatorsTest extends AbstractTest
+class IncrementingDecrementingOperatorsTest extends AbstractOperatorTestCase
 {
     /**
      * Test Pre-increment
