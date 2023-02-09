@@ -3,7 +3,7 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
-### 6.0.0-beta (04 Feb, 2023)
+### 6.0.0-beta (09 Feb, 2023)
 - ⚠️ breaking changes:
   - remove support for PHP < 7.4
   - internal classes refactored
