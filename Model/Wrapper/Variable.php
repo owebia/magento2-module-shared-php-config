@@ -71,7 +71,7 @@ class Variable extends SourceWrapper
             return parent::loadData($key);
         }
 
-        return $this->wrapperContext->createWrapper(
+        return $this->wrapperContext->create(
             static::class,
             ['data' => ['code' => $key]]
         );

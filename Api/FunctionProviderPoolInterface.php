@@ -11,7 +11,7 @@ namespace Owebia\SharedPhpConfig\Api;
 
 use Owebia\SharedPhpConfig\Api\FunctionProviderInterface;
 
-interface FunctionProxyInterface
+interface FunctionProviderPoolInterface
 {
     /**
      * @param string $functionName
@@ -21,13 +21,14 @@ interface FunctionProxyInterface
 
     /**
      * @param FunctionProviderInterface $functionProvider
+     * @param string|null $name
      */
-    public function registerFunctionProvider(FunctionProviderInterface $functionProvider): void;
+    public function add(FunctionProviderInterface $functionProvider, ?string $name = null): void;
 
     /**
      * @param string $functionName
      * @param array $arguments
      * @return mixed
      */
-    public function __call($functionName, $arguments);
+    public function call(string $functionName, array $arguments);
 }

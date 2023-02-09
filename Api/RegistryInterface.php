@@ -9,15 +9,8 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Api;
 
-use Magento\Framework\DataObject;
-
 interface RegistryInterface
 {
-    /**
-     * @param DataObject $request
-     */
-    public function init(DataObject $request): void;
-
     /**
      * @param string $name
      * @param int|null $scopeIndex

@@ -9,14 +9,15 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Api;
 
+use Owebia\SharedPhpConfig\Api\FunctionProviderPoolInterface;
 use Owebia\SharedPhpConfig\Api\RegistryInterface;
 
 interface ParserContextInterface
 {
     /**
-     * @return FunctionProxyInterface
+     * @return FunctionProviderPoolInterface
      */
-    public function getFunctionProxy(): FunctionProxyInterface;
+    public function getFunctionProviderPool(): FunctionProviderPoolInterface;
 
     /**
      * @return RegistryInterface
@@ -24,15 +25,12 @@ interface ParserContextInterface
     public function getRegistry(): RegistryInterface;
 
     /**
-     * @param string $configuration
-     * @param bool $debug
-     * @param array $data
-     * @return array
+     * @return string
      */
-    public function parse(string $configuration, bool $debug, array $data = []): array;
+    public function getDebugPrefix(): string;
 
     /**
-     * @param string $error
+     * @return bool
      */
-    public function addParsingError(string $error): void;
+    public function getDebug(): bool;
 }

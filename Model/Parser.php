@@ -11,119 +11,127 @@ namespace Owebia\SharedPhpConfig\Model;
 
 use Magento\Framework\Escaper;
 use Owebia\SharedPhpConfig\Api\ParserContextInterface;
-use Owebia\SharedPhpConfig\Logger\Logger;
+use Owebia\SharedPhpConfig\Api\ParserInterface;
+use Owebia\SharedPhpConfig\Logger\ParserDebugLogger;
 use Owebia\SharedPhpConfig\Model\Evaluator;
 use Owebia\SharedPhpConfig\Model\EvaluatorFactory;
 use PhpParser\ParserFactory as PhpParserFactory;
 use PhpParser\Node\Stmt\Nop;
+use Psr\Log\LoggerInterface;
 
-class Parser
+class Parser implements ParserInterface
 {
     /**
      * @var array
      */
-    private $parsingCache = [];
+    private array $parsingCache = [];
 
     /**
      * @var Escaper
      */
-    private $escaper;
+    private Escaper $escaper;
 
     /**
-     * @var ParserContextInterface
+     * @var Evaluator
      */
-    private $parserContext;
+    private Evaluator $evaluator;
 
     /**
-     * @var EvaluatorFactory
+     * @var PhpParserFactory
      */
-    private $evaluatorFactory;
+    private PhpParserFactory $phpParserFactory;
 
     /**
-     * @var Logger
+     * @var ParserDebugLogger
      */
-    private $debugLogger;
+    private ParserDebugLogger $debugLogger;
+
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
 
     /**
      * @param Escaper $escaper
-     * @param ParserContextInterface $parserContext
-     * @param Logger $debugLogger
-     * @param EvaluatorFactory $evaluatorFactory
+     * @param Evaluator $evaluator
      * @param PhpParserFactory $phpParserFactory
+     * @param ParserDebugLogger $debugLogger
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Escaper $escaper,
-        ParserContextInterface $parserContext,
-        Logger $debugLogger,
-        EvaluatorFactory $evaluatorFactory,
-        PhpParserFactory $phpParserFactory
+        Evaluator $evaluator,
+        PhpParserFactory $phpParserFactory,
+        ParserDebugLogger $debugLogger,
+        LoggerInterface $logger
     ) {
         $this->escaper = $escaper;
-        $this->parserContext = $parserContext;
-        $this->debugLogger = $debugLogger;
-        $this->evaluatorFactory = $evaluatorFactory;
+        $this->evaluator = $evaluator;
         $this->phpParserFactory = $phpParserFactory;
+        $this->debugLogger = $debugLogger;
+        $this->logger = $logger;
     }
 
     /**
+     * @param ParserContextInterface $context
      * @param string $configuration
-     * @param bool $debug
      */
-    public function parse(string $configuration, bool $debug = false): void
+    public function parse(ParserContextInterface $context, string $configuration): void
     {
+        $context->getDebug() && $this->debugLogger->collapseOpen($context->getDebugPrefix());
+
         $t0 = microtime(true);
-        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
-        ini_set('xdebug.max_nesting_level', '3000');
+        try {
+            // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
+            ini_set('xdebug.max_nesting_level', '3000');
 
-        $parser = $this->phpParserFactory->create(PhpParserFactory::PREFER_PHP7);
+            $phpParser = $this->phpParserFactory->create(PhpParserFactory::PREFER_PHP7);
 
-        $hash = hash('md5', $configuration);
-        if (!isset($this->parsingCache[$hash])) {
-            // $stmts is an array of statement nodes
-            $stmts = $parser->parse("<?php " . $configuration . ";");
-            $this->parsingCache[$hash] = $stmts;
-        } else {
-            $stmts = $this->parsingCache[$hash];
-        }
-
-        /** @var Evaluator $evaluator */
-        $evaluator = $this->evaluatorFactory->create([
-            'registry' => $this->parserContext->getRegistry(),
-            'functionProxy' => $this->parserContext->getFunctionProxy(),
-            'debug' => $debug,
-        ]);
-
-        foreach ($stmts as $node) {
-            if ($node instanceof Nop) {
-                continue;
+            $hash = hash('md5', $configuration);
+            if (!isset($this->parsingCache[$hash])) {
+                // $stmts is an array of statement nodes
+                $stmts = $phpParser->parse("<?php " . $configuration . ";");
+                $this->parsingCache[$hash] = $stmts;
+            } else {
+                $stmts = $this->parsingCache[$hash];
             }
 
-            $this->parseNode($evaluator, $node, $debug);
-            $evaluator->reset();
+            foreach ($stmts ?? [] as $node) {
+                if ($node instanceof Nop) {
+                    continue;
+                }
+
+                $this->parseNode($context, $this->evaluator, $node);
+                $this->evaluator->reset();
+            }
+        } catch (\Exception $e) {
+            $this->logger->debug($e);
+            $context->getDebug()
+                && $this->debugLogger->debug($context->getDebugPrefix() . " - Error - " . $e->getMessage());
         }
+
         $t1 = microtime(true);
-        if ($debug) {
-            $this->debugLogger->debug("Duration " . round($t1 - $t0, 2) . " s");
-        }
+        $context->getDebug() && $this->debugLogger->debug("Duration " . round($t1 - $t0, 2) . " s");
+        $context->getDebug() && $this->debugLogger->collapseClose();
     }
 
     /**
+     * @param ParserContextInterface $context
      * @param Evaluator $evaluator
      * @param object $node
-     * @param bool $debug
      * @throws \Exception
      */
-    private function parseNode(Evaluator $evaluator, $node, bool $debug): void
+    private function parseNode(ParserContextInterface $context, Evaluator $evaluator, $node): void
     {
         try {
-            $evaluator->evaluate($node);
-            if ($debug) {
+            $evaluator->evaluate($context, $node);
+            if ($context->getDebug()) {
                 $msg = $evaluator->getDebugOutput();
                 $this->addDebug($evaluator, $node, $msg, 'panel-info');
             }
         } catch (\Exception $e) {
-            $this->parserContext->addParsingError('Error ' . $e->getTraceAsString());
-            if ($debug) {
+            $context->addError('Error ' . $e->getTraceAsString());
+            if ($context->getDebug()) {
                 $msg = $evaluator->getDebugOutput() . $e->getMessage();
                 $this->addDebug($evaluator, $node, $msg, 'panel-danger');
             }

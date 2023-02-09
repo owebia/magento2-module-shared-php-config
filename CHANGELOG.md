@@ -9,8 +9,9 @@ Module: `owebia/magento2-module-shared-php-config`
   - internal classes refactored
 - ✨ new api:
   - `Api\FunctionProviderInterface`
-  - `Api\FunctionProxyInterface`
+  - `Api\FunctionProviderPoolInterface`
   - `Api\ParserContextInterface`
+  - `Api\ParserInterface`
   - `Api\RegistryInterface`
   - `Api\RequiresParserContextInterface`
 - improve code quality:

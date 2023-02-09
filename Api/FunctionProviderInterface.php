@@ -14,5 +14,5 @@ interface FunctionProviderInterface
     /**
      * @return string[]
      */
-    public function getFunctionMap(): array;
+    public function getFunctions(): array;
 }

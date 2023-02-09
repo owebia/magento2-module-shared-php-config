@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Owebia\SharedPhpConfig\Model;
 
 use Owebia\SharedPhpConfig\Api\RegistryInterface;
-use Owebia\SharedPhpConfig\Model\Wrapper;
 
 class Registry implements RegistryInterface
 {
@@ -27,62 +26,6 @@ class Registry implements RegistryInterface
     private array $globalVariables = [
         [] // Main Scope
     ];
-
-    /**
-     * @var WrapperContext
-     */
-    private WrapperContext $wrapperContext;
-
-    /**
-     * @param WrapperContext $wrapperContext
-     */
-    public function __construct(
-        WrapperContext $wrapperContext
-    ) {
-        $this->wrapperContext = $wrapperContext;
-    }
-
-    /**
-     * @param \Magento\Framework\DataObject $request
-     */
-    public function init(\Magento\Framework\DataObject $request): void
-    {
-        $this->data = [
-            []
-        ];
-        $this->register(
-            'app',
-            $this->wrapperContext->createWrapper(Wrapper\App::class)
-        );
-        $requestWrapper = $this->wrapperContext->createWrapper(Wrapper\Request::class, ['request' => $request]);
-        $this->register('request', $requestWrapper);
-        $this->register(
-            'quote',
-            $this->wrapperContext->createWrapper(Wrapper\Quote::class, [
-                'requestWrapper' => $requestWrapper,
-            ])
-        );
-        $this->register(
-            'customer',
-            $this->wrapperContext->createWrapper(Wrapper\Customer::class)
-        );
-        $this->register(
-            'customer_group',
-            $this->wrapperContext->createWrapper(Wrapper\CustomerGroup::class)
-        );
-        $this->register(
-            'variable',
-            $this->wrapperContext->createWrapper(Wrapper\Variable::class, [
-                'requestWrapper' => $requestWrapper,
-            ])
-        );
-        $this->register(
-            'store',
-            $this->wrapperContext->createWrapper(Wrapper\Store::class, [
-                'requestWrapper' => $requestWrapper,
-            ])
-        );
-    }
 
     /**
      * @param string $name

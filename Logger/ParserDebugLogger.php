@@ -9,14 +9,16 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Logger;
 
-class Logger extends \Monolog\Logger
+use Monolog\Logger;
+
+class ParserDebugLogger extends Logger
 {
     /**
      * @param string $title
      * @param string $msg
      * @param string $type
      */
-    public function collapse($title, $msg, $type = 'panel-default')
+    public function collapse(string $title, string $msg, string $type = 'panel-primary'): void
     {
         $this->collapseOpen($title, $type);
         $this->debug($msg);
@@ -27,7 +29,7 @@ class Logger extends \Monolog\Logger
      * @param string $title
      * @param string $type
      */
-    public function collapseOpen($title, $type = 'panel-default')
+    public function collapseOpen(string $title, string $type = 'panel-primary'): void
     {
         $uid = 'id' . uniqid();
         $content = <<<EOD
@@ -48,7 +50,7 @@ EOD;
     /**
      *
      */
-    public function collapseClose()
+    public function collapseClose(): void
     {
         $content = <<<EOD
         </div>

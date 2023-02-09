@@ -9,59 +9,28 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Model;
 
-use Magento\Quote\Model\Quote\Address\RateRequest;
 use Owebia\SharedPhpConfig\Api\ParserContextInterface;
 use Owebia\SharedPhpConfig\Api\FunctionProviderInterface;
-use Owebia\SharedPhpConfig\Api\FunctionProxyInterface;
+use Owebia\SharedPhpConfig\Api\FunctionProviderPoolInterface;
 use Owebia\SharedPhpConfig\Api\RegistryInterface;
-use Owebia\SharedPhpConfig\Api\RegistryInterfaceFactory;
-use Owebia\SharedPhpConfig\Logger\Logger;
-use Owebia\SharedPhpConfig\Model\ParserFactory;
-use Owebia\SharedPhpConfig\Model\Wrapper;
 use Owebia\SharedPhpConfig\Model\WrapperContext;
-use Psr\Log\LoggerInterface;
 
-abstract class ParserContext implements ParserContextInterface, FunctionProviderInterface
+class ParserContext implements ParserContextInterface
 {
-    /**
-     * @var ParserFactory
-     */
-    private $parserFactory;
-
-    /**
-     * @var RegistryInterfaceFactory
-     */
-    private $registryFactory;
-
-    /**
-     * @var RateRequest
-     */
-    private $request;
-
-    /**
-     * @var FunctionProxyInterface
-     */
-    private $functionProxy;
-
     /**
      * @var WrapperContext
      */
-    private $wrapperContext;
+    private WrapperContext $wrapperContext;
 
     /**
-     * @var LoggerInterface
+     * @var FunctionProviderPoolInterface
      */
-    private $logger;
+    private FunctionProviderPoolInterface $functionProviderPool;
 
     /**
-     * @var Logger
+     * @var FunctionProviderInterface
      */
-    private $debugLogger;
-
-    /**
-     * @var string
-     */
-    private $debugPrefix;
+    private FunctionProviderInterface $mainFunctionProvider;
 
     /**
      * @var RegistryInterface
@@ -69,41 +38,40 @@ abstract class ParserContext implements ParserContextInterface, FunctionProvider
     private $registry;
 
     /**
-     * @param FunctionProxyInterface $functionProxy
-     * @param ParserFactory $parserFactory
-     * @param RegistryInterfaceFactory $registryFactory
-     * @param WrapperContext $wrapperContext
-     * @param LoggerInterface $logger
-     * @param Logger $debugLogger
-     * @param RateRequest|null $request
-     * @param string $debugPrefix
+     * @var string
      */
-    public function __construct(
-        FunctionProxyInterface $functionProxy,
-        ParserFactory $parserFactory,
-        RegistryInterfaceFactory $registryFactory,
-        WrapperContext $wrapperContext,
-        LoggerInterface $logger,
-        Logger $debugLogger,
-        RateRequest $request = null,
-        string $debugPrefix = ''
-    ) {
-        $this->functionProxy = $functionProxy;
-        $this->parserFactory = $parserFactory;
-        $this->registryFactory = $registryFactory;
-        $this->wrapperContext = $wrapperContext;
-        $this->logger = $logger;
-        $this->debugLogger = $debugLogger;
-        $this->request = $request;
-        $this->debugPrefix = $debugPrefix;
-    }
+    private string $debugPrefix;
 
     /**
-     * @return ParserFactory
+     * @var bool
      */
-    public function getParserFactory(): ParserFactory
-    {
-        return $this->parserFactory;
+    private bool $debug;
+
+    /**
+     * @param WrapperContext $wrapperContext
+     * @param RegistryInterface $registry
+     * @param FunctionProviderPoolInterface $functionProviderPool
+     * @param FunctionProviderInterface|null $mainFunctionProvider
+     * @param string $debugPrefix
+     * @param bool $debug
+     */
+    public function __construct(
+        WrapperContext $wrapperContext,
+        RegistryInterface $registry,
+        FunctionProviderPoolInterface $functionProviderPool,
+        ?FunctionProviderInterface $mainFunctionProvider = null,
+        string $debugPrefix = '',
+        bool $debug = false
+    ) {
+        $this->wrapperContext = $wrapperContext;
+        $this->functionProviderPool = $functionProviderPool;
+        $this->registry = $registry;
+        $this->debugPrefix = $debugPrefix;
+        $this->debug = $debug;
+        $this->functionProviderPool->setParserContext($this);
+        if ($mainFunctionProvider) {
+            $this->functionProviderPool->add($mainFunctionProvider);
+        }
     }
 
     /**
@@ -115,11 +83,11 @@ abstract class ParserContext implements ParserContextInterface, FunctionProvider
     }
 
     /**
-     * @return FunctionProxyInterface
+     * @return FunctionProviderPoolInterface
      */
-    public function getFunctionProxy(): FunctionProxyInterface
+    public function getFunctionProviderPool(): FunctionProviderPoolInterface
     {
-        return $this->functionProxy;
+        return $this->functionProviderPool;
     }
 
     /**
@@ -127,59 +95,33 @@ abstract class ParserContext implements ParserContextInterface, FunctionProvider
      */
     public function getRegistry(): RegistryInterface
     {
-        return $this->registry;
+        return $this->registry ??= $this->registryFactory->create();
     }
 
     /**
-     * @param string $configuration
-     * @param bool $debug
-     * @param array $data
-     * @return array
+     * @return string
      */
-    public function parse(string $configuration, bool $debug, array $data = []): array
+    public function getDebugPrefix(): string
     {
-        if ($debug) {
-            $this->debugLogger->collapseOpen($this->debugPrefix, 'panel-primary');
-        }
-
-        $this->functionProxy->registerFunctionProvider($this);
-
-        /** @var RegistryInterface $registry */
-        $registry = $this->registry = $this->registryFactory->create();
-        $registry->init($this->request);
-        $registry->register(
-            'info',
-            $this->wrapperContext->createWrapper(Wrapper\Info::class, ['data' => $data])
-        );
-
-        $this->functionProxy->setContext($this);
-
-        try {
-            $result = $this->doParse($configuration, $debug);
-        } catch (\Exception $e) {
-            $result = [];
-            $this->logger->debug($e);
-            if ($debug) {
-                $this->debugLogger->debug($this->debugPrefix . " - Error - " . $e->getMessage());
-            }
-        }
-
-        if ($debug) {
-            $this->debugLogger->collapseClose();
-        }
-
-        return $result;
+        return $this->debugPrefix;
     }
 
     /**
-     * @param string $configuration
-     * @param bool $debug
-     * @return array
+     * @return bool
      */
-    abstract protected function doParse(string $configuration, bool $debug): array;
+    public function getDebug(): bool
+    {
+        return $this->debug;
+    }
 
     /**
      * @param string $error
      */
-    abstract public function addParsingError(string $error): void;
+    public function addError(string $error): void
+    {
+        $this->errors[] = $error;
+        if ($this->functionProviderPool->functionExists('addError')) {
+            $this->functionProviderPool->call('addError', [$error]);
+        }
+    }
 }

@@ -106,29 +106,18 @@ class WrapperContext
             } elseif ($data instanceof \Magento\Framework\Phrase) {
                 return $data->__toString();
             } elseif ($data instanceof \Magento\Quote\Model\Quote\Item) {
-                return $this->createWrapper(Wrapper\QuoteItem::class, ['data' => $data]);
+                return $this->create(Wrapper\QuoteItem::class, ['data' => $data]);
             } elseif ($data instanceof ProductInterface) {
-                return $this->createWrapper(Wrapper\Product::class, ['data' => $data]);
+                return $this->create(Wrapper\Product::class, ['data' => $data]);
             } elseif ($data instanceof CategoryInterface) {
-                return $this->createWrapper(Wrapper\Category::class, ['data' => $data]);
+                return $this->create(Wrapper\Category::class, ['data' => $data]);
             } else {
-                return $this->createWrapper(Wrapper\SourceWrapper::class, ['data' => $data]);
+                return $this->create(Wrapper\SourceWrapper::class, ['data' => $data]);
             }
         } else {
             // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
             throw new LocalizedException(__("Unsupported type %1", gettype($data)));
         }
-    }
-
-    /**
-     * @param string $type
-     * @param array $arguments
-     * @return Wrapper\AbstractWrapper
-     */
-    public function createWrapper(string $type, array $arguments = []): Wrapper\AbstractWrapper
-    {
-        $arguments['wrapperContext'] = $this;
-        return $this->create($type, $arguments);
     }
 
     /**

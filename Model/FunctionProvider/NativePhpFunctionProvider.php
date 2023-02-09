@@ -67,9 +67,9 @@ class NativePhpFunctionProvider implements FunctionProviderInterface
     /**
      * @return string[]
      */
-    public function getFunctionMap(): array
+    public function getFunctions(): array
     {
-        return array_combine($this->allowedFunctions, $this->allowedFunctions);
+        return $this->allowedFunctions;
     }
 
     /**

@@ -6,32 +6,31 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Owebia\SharedPhpConfig\Api\FunctionProxyInterface" type="Owebia\SharedPhpConfig\Model\FunctionProxy"/>
+    <preference for="Owebia\SharedPhpConfig\Api\FunctionProviderPoolInterface" type="Owebia\SharedPhpConfig\Model\FunctionProviderPool"/>
+    <preference for="Owebia\SharedPhpConfig\Api\ParserContextInterface" type="Owebia\SharedPhpConfig\Model\ParserContext"/>
+    <preference for="Owebia\SharedPhpConfig\Api\ParserInterface" type="Owebia\SharedPhpConfig\Model\Parser"/>
     <preference for="Owebia\SharedPhpConfig\Api\RegistryInterface" type="Owebia\SharedPhpConfig\Model\Registry"/>
     <type name="Owebia\SharedPhpConfig\Logger\Handler">
         <arguments>
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
-    <type name="Owebia\SharedPhpConfig\Logger\Logger">
+    <type name="Owebia\SharedPhpConfig\Logger\ParserDebugLogger">
         <arguments>
             <argument name="name" xsi:type="string">Owebia_SharedPhpConfig</argument>
-            <argument name="handlers"  xsi:type="array">
+            <argument name="handlers" xsi:type="array">
                 <item name="system" xsi:type="object">Owebia\SharedPhpConfig\Logger\Handler</item>
             </argument>
         </arguments>
     </type>
-    <type name="Owebia\SharedPhpConfig\Api\FunctionProxyInterface">
+    <type name="Owebia\SharedPhpConfig\Api\FunctionProviderPoolInterface">
         <arguments>
             <argument name="functionProviders" xsi:type="array">
-                <item name="Owebia_SharedPhpConfig_Model_FunctionProvider_BaseFunctionProvider"
+                <item name="BaseFunctionProvider"
                     xsi:type="object">Owebia\SharedPhpConfig\Model\FunctionProvider\BaseFunctionProvider</item>
-                <item name="Owebia_SharedPhpConfig_Model_FunctionProvider_NativePhpFunctionProvider"
+                <item name="NativePhpFunctionProvider"
                     xsi:type="object">Owebia\SharedPhpConfig\Model\FunctionProvider\NativePhpFunctionProvider</item>
             </argument>
         </arguments>
     </type>
-    <!-- This can be used to override a wrapper class
-    <preference for="Owebia\SharedPhpConfig\Model\Wrapper\Customer" type="Vendor\Module\Path\To\Customer\Wrapper" />
-    -->
 </config>

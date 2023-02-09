@@ -13,7 +13,6 @@ interface RequiresParserContextInterface
 {
     /**
      * @param ParserContextInterface $parserContext
-     * @return $this
      */
-    public function setContext(ParserContextInterface $parserContext);
+    public function setParserContext(ParserContextInterface $parserContext): void;
 }

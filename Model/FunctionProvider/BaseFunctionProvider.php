@@ -18,12 +18,12 @@ class BaseFunctionProvider implements FunctionProviderInterface
     /**
      * @return string[]
      */
-    public function getFunctionMap(): array
+    public function getFunctions(): array
     {
         return [
-            '__' => 'translateFunction',
-            'help' => 'helpFunction',
-            'error' => 'errorFunction',
+            '__' => 'translate',
+            'help',
+            'error',
         ];
     }
 
@@ -31,7 +31,7 @@ class BaseFunctionProvider implements FunctionProviderInterface
      * @param mixed $args,...
      * @return string
      */
-    public function translateFunction(/* ...$args */): string
+    public function translate(/* ...$args */): string
     {
         $args = func_get_args();
         $text = array_shift($args);
@@ -41,7 +41,7 @@ class BaseFunctionProvider implements FunctionProviderInterface
     /**
      * @return string
      */
-    public function helpFunction(): string
+    public function help(): string
     {
         return "The result of the help call is visible in the backoffice";
     }
@@ -50,7 +50,7 @@ class BaseFunctionProvider implements FunctionProviderInterface
      * @param string $msg
      * @throws LocalizedException
      */
-    public function errorFunction(string $msg): void
+    public function error(string $msg): void
     {
         throw new LocalizedException(__($msg));
     }

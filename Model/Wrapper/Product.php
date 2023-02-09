@@ -95,9 +95,9 @@ class Product extends SourceWrapper
 
     /**
      * @param string $attributeCode
-     * @return string|null
+     * @return string|array|null
      */
-    public function getAttributeText($attributeCode): ?string
+    public function getAttributeText($attributeCode)
     {
         $this->loadIfRequired($attributeCode);
         /** @var \Magento\Catalog\Api\Data\Product $product */
@@ -110,11 +110,9 @@ class Product extends SourceWrapper
      */
     public function getSourceItems(): array
     {
-        /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
+        /** @var ProductInterface $product */
         $product = $this->getSource();
         return $this->wrapperContext->wrap(
-            // Not available in old Magento2 versions
-            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
             $this->wrapperContext->get(GetSourceItemsBySkuInterface::class)
                 ->execute(
                     $product->getSku()
@@ -130,12 +128,12 @@ class Product extends SourceWrapper
     {
         switch ($key) {
             case 'attribute_set':
-                return $this->wrapperContext->createWrapper(
+                return $this->wrapperContext->create(
                     Wrapper\ProductAttributeSet::class,
                     ['data' => ['id' => (int)$this->{'attribute_set_id'}]]
                 );
             case 'stock_item':
-                return $this->wrapperContext->createWrapper(
+                return $this->wrapperContext->create(
                     Wrapper\ProductStockItem::class,
                     ['data' => ['product_id' => (int)$this->{'entity_id'}]]
                 );
