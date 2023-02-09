@@ -890,8 +890,7 @@ class Evaluator
         }
         if (!$method) {
             return $this->error(
-                "Unsupported MethodCall expression - Unkown method"
-                    . (is_callable([$variable, $methodName]) ? '1' : '0'),
+                "Unsupported MethodCall expression - Unkown method `$methodName`",
                 $expr
             );
         }
