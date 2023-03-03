@@ -35,9 +35,9 @@ class Product extends SourceWrapper
     private ProductRepositoryInterface $productRepository;
 
     /**
-     * @var array
+     * @var ?array
      */
-    protected array $attributes = [];
+    protected ?array $attributes;
 
     /**
      * @param ProductRepositoryInterface $productRepository
