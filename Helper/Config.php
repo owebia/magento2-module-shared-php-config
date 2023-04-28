@@ -79,6 +79,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
 
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
 
+        $configuration = $configuration ?? '';
         $hash = hash('md5', $configuration);
         if (!isset($this->parsingCache[$hash])) {
             // $stmts is an array of statement nodes

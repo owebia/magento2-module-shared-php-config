@@ -52,6 +52,11 @@ abstract class AbstractWrapper
     protected $registry;
 
     /**
+     * @var \Owebia\SharedPhpConfig\Logger\Logger
+     */
+    protected $logger;
+
+    /**
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\Backend\Model\Auth\Session $backendAuthSession
      * @param \Magento\Framework\Escaper $escaper

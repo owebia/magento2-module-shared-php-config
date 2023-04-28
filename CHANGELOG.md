@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 3.0.8 (28 Apr, 2023)
+- add support for PHP 8.2
+
 ### 3.0.7 (15 Apr, 2022)
 - apply Magento2 coding standard
 
