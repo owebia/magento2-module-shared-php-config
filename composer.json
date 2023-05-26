@@ -17,7 +17,7 @@
         "nikic/php-parser": "^3.1.0|^4.0.0"
     },
     "type": "magento2-module",
-    "version": "6.0.0-beta",
+    "version": "6.0.1",
     "license": [
         "proprietary"
     ],

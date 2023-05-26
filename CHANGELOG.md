@@ -3,9 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
-### 6.0.0-beta (09 Feb, 2023)
+### 6.0.1 (26 May, 2023)
 - ⚠️ breaking changes:
-  - remove support for PHP < 7.4
+  - drop support for PHP < 7.4
   - internal classes refactored
 - ✨ new api:
   - `Api\FunctionProviderInterface`
@@ -20,6 +20,9 @@ Module: `owebia/magento2-module-shared-php-config`
   - use modern syntax
   - reduce class dependencies
 
+### 3.0.8 (28 Apr, 2023)
+- add support for PHP 8.2
+
 ### 3.0.7 (15 Apr, 2022)
 - apply Magento2 coding standard
 
@@ -28,7 +31,7 @@ Module: `owebia/magento2-module-shared-php-config`
 - use `bool` instead of `boolean` in PHPDoc
 - fix constant declaration and usage
 - fix signature mismatch errors while keeping backward compatibility
-- remove support for PHP versions 5.5, 5.6 & 7.0
+- drop support for PHP versions 5.5, 5.6 & 7.0
 - add support for PHP versions 8.0 & 8.1
 - fix phpunit compatibility
 
