@@ -47,4 +47,20 @@ class Request extends SourceWrapper
     {
         return $this->getRequest();
     }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    protected function loadData(string $key)
+    {
+        switch ($key) {
+            case 'all_items':
+                return parent::loadData($key) ?? [];
+            case 'dest_postcode':
+                return parent::loadData($key) ?? '';
+        }
+
+        return parent::loadData($key);
+    }
 }

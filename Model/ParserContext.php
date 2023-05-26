@@ -48,6 +48,11 @@ class ParserContext implements ParserContextInterface
     private bool $debug;
 
     /**
+     * @var array
+     */
+    private array $errors;
+
+    /**
      * @param WrapperContext $wrapperContext
      * @param RegistryInterface $registry
      * @param FunctionProviderPoolInterface $functionProviderPool

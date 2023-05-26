@@ -15,6 +15,11 @@ use Owebia\SharedPhpConfig\Model\WrapperContext;
 abstract class AbstractWrapper
 {
     /**
+     * @var WrapperContext
+     */
+    protected $wrapperContext;
+
+    /**
      * @var DataObject
      */
     protected $cache;
