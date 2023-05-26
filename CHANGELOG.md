@@ -4,8 +4,10 @@
 Module: `owebia/magento2-module-shared-php-config`
 
 ### 6.0.1 (26 May, 2023)
+- add support for PHP 8.2
 - ⚠️ breaking changes:
   - drop support for PHP < 7.4
+  - drop support for Magento < 2.2
   - internal classes refactored
 - ✨ new api:
   - `Api\FunctionProviderInterface`
