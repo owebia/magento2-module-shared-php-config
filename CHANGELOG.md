@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.0.2 (02 Aug, 2023)
+- fix type error
+
 ### 6.0.1 (26 May, 2023)
 - add support for PHP 8.2
 - ⚠️ breaking changes:

@@ -162,7 +162,7 @@ abstract class AbstractWrapper
             return $this->__get($this->aliasMap[$name]);
         }
         if (!$this->cache->hasData($name)) {
-            $value = $this->wrapperContext->wrap($this->loadData($name));
+            $value = $this->wrapperContext->wrap($this->loadData((string) $name));
             $this->cache->setData($name, $value);
         }
         return $this->cache->getData($name);
