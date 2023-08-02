@@ -4,7 +4,7 @@
 Module: `owebia/magento2-module-shared-php-config`
 
 ### 6.0.2 (02 Aug, 2023)
-- fix type error
+- fix TypeError: Owebia\SharedPhpConfig\Model\Wrapper\ArrayWrapper::loadData(): Argument #1 ($key) must be of type string, int given
 
 ### 6.0.1 (26 May, 2023)
 - add support for PHP 8.2
