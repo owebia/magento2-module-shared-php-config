@@ -3,6 +3,11 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.0.3 (24 Apr, 2024)
+- add support for PHP 8.3 & PHP 8.4
+- fix PHP 8.4 compatibility warnings: Implicitly marking a parameter as nullable is deprecated since PHP 8.4
+- fix Magento2 coding standard warnings: Comment block is missing
+
 ### 6.0.2 (02 Aug, 2023)
 - fix TypeError: Owebia\SharedPhpConfig\Model\Wrapper\ArrayWrapper::loadData(): Argument #1 ($key) must be of type string, int given
 
