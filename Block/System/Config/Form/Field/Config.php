@@ -9,7 +9,16 @@ namespace Owebia\SharedPhpConfig\Block\System\Config\Form\Field;
 
 abstract class Config extends AbstractField
 {
+    /**
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
     abstract protected function getFullscreenTitle(\Magento\Framework\Data\Form\Element\AbstractElement $element);
+
+    /**
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
     abstract protected function getHelpUrl(\Magento\Framework\Data\Form\Element\AbstractElement $element);
 
     /**
@@ -48,6 +57,10 @@ abstract class Config extends AbstractField
 EOD;
     }
 
+    /**
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
     protected function getToolbarContent(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $elementId = $element->getHtmlId();
@@ -73,6 +86,10 @@ EOD;
 EOD;
     }
 
+    /**
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
     protected function getFooterContent(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         return '';
