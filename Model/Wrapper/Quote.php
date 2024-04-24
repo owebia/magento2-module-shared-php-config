@@ -46,7 +46,7 @@ class Quote extends SourceWrapper
     public function __construct(
         TaxConfig $taxConfig,
         WrapperContext $wrapperContext,
-        RequestWrapper $requestWrapper = null,
+        ?RequestWrapper $requestWrapper = null,
         $data = null
     ) {
         $this->taxConfig = $taxConfig;

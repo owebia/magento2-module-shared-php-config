@@ -34,7 +34,7 @@ class Variable extends SourceWrapper
     public function __construct(
         VariableFactory $variableFactory,
         WrapperContext $wrapperContext,
-        RequestWrapper $requestWrapper = null,
+        ?RequestWrapper $requestWrapper = null,
         $data = null
     ) {
         $this->variableFactory = $variableFactory;

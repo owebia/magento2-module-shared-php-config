@@ -26,7 +26,7 @@ class Request extends SourceWrapper
      */
     public function __construct(
         WrapperContext $wrapperContext,
-        RateRequest $request = null
+        ?RateRequest $request = null
     ) {
         $this->request = $request;
         parent::__construct($wrapperContext);

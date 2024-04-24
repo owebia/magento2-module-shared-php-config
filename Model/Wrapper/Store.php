@@ -47,7 +47,7 @@ class Store extends SourceWrapper
     public function __construct(
         StoreRepositoryInterface $storeRepository,
         WrapperContext $wrapperContext,
-        RequestWrapper $requestWrapper = null,
+        ?RequestWrapper $requestWrapper = null,
         $data = null
     ) {
         $this->storeRepository = $storeRepository;
