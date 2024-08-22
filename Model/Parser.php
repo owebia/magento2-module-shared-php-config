@@ -14,7 +14,6 @@ use Owebia\SharedPhpConfig\Api\ParserContextInterface;
 use Owebia\SharedPhpConfig\Api\ParserInterface;
 use Owebia\SharedPhpConfig\Logger\ParserDebugLogger;
 use Owebia\SharedPhpConfig\Model\Evaluator;
-use Owebia\SharedPhpConfig\Model\EvaluatorFactory;
 use PhpParser\ParserFactory as PhpParserFactory;
 use PhpParser\Node\Stmt\Nop;
 use Psr\Log\LoggerInterface;
@@ -85,7 +84,7 @@ class Parser implements ParserInterface
             // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
             ini_set('xdebug.max_nesting_level', '3000');
 
-            $phpParser = $this->phpParserFactory->create(PhpParserFactory::PREFER_PHP7);
+            $phpParser = $this->phpParserFactory->createForHostVersion();
 
             $configuration = $configuration ?? '';
             $hash = hash('md5', $configuration);

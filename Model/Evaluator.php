@@ -326,7 +326,7 @@ class Evaluator
                 return $this->evalNodeExprClosure($context, $expr);
 
             case Node\Expr\ConstFetch::class:
-                return $this->debug($context, $expr, constant($expr->name->parts[0]));
+                return $this->debug($context, $expr, constant($expr->name->getParts()[0]));
 
             case Node\Expr\FuncCall::class:
                 return $this->evalNodeExprFuncCall($context, $expr);
@@ -513,10 +513,7 @@ class Evaluator
 
             // Null coalescing assignment operator ??=
             // https://www.php.net/manual/en/migration74.new-features.php#migration74.new-features.core.null-coalescing-assignment-operator
-            // Introduced in PHP 7.4
-            // Introduced in nikic/php-parser:4.*
-            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
-            case 'Node\\Expr\\AssignOp\\Coalesce':
+            case Node\Expr\AssignOp\Coalesce::class:
                 return $this->evalAssignOp($context, $expr, fn($a, $b) => $a ?? $b);
 
             default:
@@ -812,12 +809,12 @@ class Evaluator
      */
     private function evalNodeExprFuncCall(ParserContextInterface $context, Node\Expr\FuncCall $expr)
     {
-        if (isset($expr->name->parts)) {
-            if (count($expr->name->parts) != 1) {
+        if ($expr->name instanceof Node\Name && ($parts = $expr->name->getParts())) {
+            if (empty($parts) || count($parts) != 1) {
                 return $this->error("Unsupported FuncCall expression", $expr);
             }
 
-            $functionName = $expr->name->parts[0];
+            $functionName = $parts[0];
             $functionProviderPool = $context->getFunctionProviderPool();
             if ($functionProviderPool->functionExists($functionName)) {
                 $args = $this->evaluateArgs($context, $expr);
@@ -955,8 +952,18 @@ class Evaluator
     {
         $className = get_class($expr);
         switch ($className) {
-            case Node\Scalar\DNumber::class:
-            case Node\Scalar\LNumber::class:
+            // nikic/php-parser:^4.0
+            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
+            case 'PhpParser\\Node\\Scalar\\DNumber':
+            // nikic/php-parser:^5.0
+            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
+            case 'PhpParser\\Node\\Scalar\\Int_':
+            // nikic/php-parser:^4.0
+            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
+            case 'PhpParser\\Node\\Scalar\\LNumber':
+            // nikic/php-parser:^5.0
+            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
+            case 'PhpParser\\Node\\Scalar\\Float_':
             case Node\Scalar\String_::class:
                 return $this->debug($context, $expr, $expr->value);
 
@@ -975,10 +982,7 @@ class Evaluator
     {
         $className = get_class($expr);
         switch ($className) {
-            // Introduced in nikic/php-parser:4.*
-            // Don't use ::class to keep compatibility with nikic/php-parser:3.*
-            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
-            case 'PhpParser\\Node\\Stmt\\Expression':
+            case Node\Stmt\Expression::class:
                 return $this->debug($context, $expr, $this->evl($context, $expr->expr));
 
             case Node\Stmt\Foreach_::class:
@@ -1086,17 +1090,15 @@ class Evaluator
 
         $className = get_class($expr);
         switch ($className) {
-            // Introduced in nikic/php-parser:4.*
-            // Don't use ::class to keep compatibility with nikic/php-parser:3.*
-            // phpcs:ignore Magento2.PHP.LiteralNamespaces.LiteralClassUsage
-            case 'PhpParser\\Node\\Identifier':
+            case Node\Identifier::class:
                 return $this->debug($context, $expr, (string)$expr);
 
             case Node\Name::class:
-                if (!isset($expr->parts) || count($expr->parts) != 1) {
+                $parts = $expr->getParts();
+                if (empty($parts) || count($parts) != 1) {
                     return $this->error("Unsupported Name expression", $expr);
                 }
-                return $this->debug($context, $expr, $expr->parts[0]);
+                return $this->debug($context, $expr, $parts[0]);
 
             default:
                 return $this->error("Unsupported expression {$className}", $expr);

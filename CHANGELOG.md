@@ -3,6 +3,11 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.1.0 (22 Aug, 2024)
+- fix compatibility with magento 2.4.7-p1
+- add support for nikic/php-parser ^5.0.0
+- drop support for nikic/php-parser <4.18
+
 ### 6.0.3 (24 Apr, 2024)
 - add support for PHP 8.3 & PHP 8.4
 - fix PHP 8.4 compatibility warnings: Implicitly marking a parameter as nullable is deprecated since PHP 8.4
