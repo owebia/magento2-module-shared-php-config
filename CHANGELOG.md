@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.1.1 (07 Feb, 2025)
+- fix display help icon on configuration field only when available
+
 ### 6.1.0 (22 Aug, 2024)
 - fix compatibility with magento 2.4.7-p1
 - add support for nikic/php-parser ^5.0.0
