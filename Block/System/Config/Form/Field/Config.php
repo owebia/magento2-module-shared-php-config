@@ -28,6 +28,13 @@ abstract class Config extends AbstractField
     protected function getHeader(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $elementId = $element->getHtmlId();
+
+        $helpUrl = $this->getHelpUrl($element);
+        $helpButton = !$helpUrl ? '' : <<<EOD
+            <a target="_blank" class="icon icon-help" href="{$this->escapeHtml($helpUrl)}"
+                title="{$this->escapeHtml(__('Help'))}"><span>{$this->escapeHtml(__('Help'))}</span></a>
+            EOD;
+
         return <<<EOD
     <script>
         require([
@@ -43,8 +50,7 @@ abstract class Config extends AbstractField
                     <span class="page-title">{$this->escapeHtml($this->getFullscreenTitle($element))}</span>
                 </div>
                 <div class="pceToolbar col-l-4 col-m-6">
-                    <a target="_blank" class="icon icon-help" href="{$this->escapeHtml($this->getHelpUrl($element))}"
-                        title="{$this->escapeHtml(__('Help'))}"><span>{$this->escapeHtml(__('Help'))}</span></a>
+                    $helpButton
                     <a href="#" class="icon icon-check pceFullscreenOff"
                         title="{$this->escapeHtml(__('Reduce'))}"><span>{$this->escapeHtml(__('Reduce'))}</span></a>
                 </div>
@@ -64,11 +70,17 @@ EOD;
     protected function getToolbarContent(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $elementId = $element->getHtmlId();
+
+        $helpUrl = $this->getHelpUrl($element);
+        $helpButton = !$helpUrl ? '' : <<<EOD
+            <a target="_blank" class="icon icon-help" href="{$this->escapeHtml($helpUrl)}"
+                title="{$this->escapeHtml(__('Help'))}"><span>{$this->escapeHtml(__('Help'))}</span></a>
+            EOD;
+
         return <<<EOD
             <a href="#" class="icon icon-edit pceFullscreenOn"
                 title="{$this->escapeHtml(__('Edit'))}"><span>{$this->escapeHtml(__('Edit'))}</span></a>
-            <a target="_blank" class="icon icon-help" href="{$this->escapeHtml($this->getHelpUrl($element))}"
-                title="{$this->escapeHtml(__('Help'))}"><span>{$this->escapeHtml(__('Help'))}</span></a>
+            $helpButton
             <a target="_blank" class="icon icon-svg" href="{$this->getUrl('owebia_advancedsettingcore/debug/index')}"
                 title="{$this->escapeHtml(__('View Debug'))}">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
