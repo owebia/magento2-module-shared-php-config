@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Logger;
 
+use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\HandlerInterface;
+
 class Handler extends \Magento\Framework\Logger\Handler\Base
 {
     /**
@@ -17,19 +21,14 @@ class Handler extends \Magento\Framework\Logger\Handler\Base
     protected $fileName = '/var/log/owebia_advancedsettingcore.log';
 
     /**
-     * @var int
-     */
-    protected $loggerType = \Monolog\Logger::DEBUG;
-
-    /**
-     * @{inheritDoc}
+     * setFormatter is called in the constructor of Base
+     * Overriding this method is the easier way to use a custom formatter without a lot of code to maintain
      *
-     * @param array $record
-     * @return void
+     * @param FormatterInterface $formatter
      */
-    public function write(array $record): void
+    #[\Override]
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
-        $record['formatted'] = $record['message'];
-        parent::write($record);
+        return parent::setFormatter(new LineFormatter("%message%\n"));
     }
 }
