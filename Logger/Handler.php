@@ -29,6 +29,6 @@ class Handler extends \Magento\Framework\Logger\Handler\Base
     #[\Override]
     public function setFormatter(FormatterInterface $formatter): HandlerInterface
     {
-        return parent::setFormatter(new LineFormatter("%message%\n"));
+        return parent::setFormatter(new LineFormatter("%message%\n", null, true));
     }
 }
