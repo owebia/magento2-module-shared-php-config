@@ -43,6 +43,25 @@ class Request extends SourceWrapper
     /**
      * @return QuoteModel|null
      */
+    public function getQuote(): ?QuoteModel
+    {
+        // Get quote from RateRequest if possible
+        if ($request = $this->getRequest()) {
+            if ($items = $request->getAllItems()) {
+                foreach ($items as $item) {
+                    if ($quote = $item->getQuote()) {
+                        return $quote;
+                    }
+                }
+            }
+        }
+
+        return $this->wrapperContext->getQuote();
+    }
+
+    /**
+     * @return object|null
+     */
     protected function loadSource(): ?object
     {
         return $this->getRequest();

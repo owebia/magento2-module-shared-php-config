@@ -10,27 +10,27 @@ declare(strict_types=1);
 namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
 use Owebia\SharedPhpConfig\Model\WrapperContext;
+use Owebia\SharedPhpConfig\Model\Wrapper\Request as RequestWrapper;
 
 class Customer extends SourceWrapper
 {
     /**
-     * @var CustomerRepositoryInterface
+     * @var RequestWrapper|null
      */
-    private CustomerRepositoryInterface $customerRepository;
+    private ?RequestWrapper $requestWrapper;
 
     /**
-     * @param CustomerRepositoryInterface $customerRepository
      * @param WrapperContext $wrapperContext
+     * @param RequestWrapper|null $requestWrapper
      * @param mixed $data
      */
     public function __construct(
-        CustomerRepositoryInterface $customerRepository,
         WrapperContext $wrapperContext,
+        ?RequestWrapper $requestWrapper = null,
         $data = null
     ) {
-        $this->customerRepository = $customerRepository;
+        $this->requestWrapper = $requestWrapper;
         parent::__construct($wrapperContext, $data);
     }
 
@@ -39,7 +39,7 @@ class Customer extends SourceWrapper
      */
     protected function loadSource(): ?object
     {
-        $quote = $this->wrapperContext->getQuote();
+        $quote = $this->requestWrapper ? $this->requestWrapper->getQuote() : $this->wrapperContext->getQuote();
         if ($quote && ($customer = $quote->getCustomer())) {
             return $customer;
         }
