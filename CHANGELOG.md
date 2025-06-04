@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.1.3 (04 Jun, 2025)
+- fix NOT LOGGED IN customer group retrieval
+
 ### 6.1.2 (02 May, 2025)
 - fix Declaration of Owebia\SharedPhpConfig\Logger\Handler::write(array $record): void must be compatible with Magento\Framework\Logger\Handler\Base::write(Monolog\LogRecord $record): void
 - fix unexpected totals recalculation on quote retrieval

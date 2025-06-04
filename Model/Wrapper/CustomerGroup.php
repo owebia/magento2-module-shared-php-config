@@ -49,7 +49,7 @@ class CustomerGroup extends SourceWrapper
     protected function loadSource(): ?object
     {
         $quote = $this->requestWrapper ? $this->requestWrapper->getQuote() : $this->wrapperContext->getQuote();
-        $customerGroupId = $quote ? $quote->getCustomerGroupId() : null;
-        return $customerGroupId ? $this->groupRepository->getById($customerGroupId) : null;
+        $customerGroupId = $quote ? $quote->getCustomerGroupId() : 0;
+        return $this->groupRepository->getById($customerGroupId); // 0 is the customer group ID for "NOT LOGGED IN"
     }
 }
