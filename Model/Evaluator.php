@@ -1020,7 +1020,7 @@ class Evaluator
         $exp = $this->evl($context, $expr->expr);
         $valueVar = $this->evl($context, $expr->valueVar->name);
         $keyVar = $expr->keyVar ? $this->evl($context, $expr->keyVar->name) : null;
-        if (!is_array($exp)) {
+        if (!is_iterable($exp)) {
             return $this->error("Unsupported Foreach_ expression - Undefined variable", $expr);
         }
         foreach ($exp as $key => $value) {

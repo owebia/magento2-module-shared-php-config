@@ -11,7 +11,7 @@ namespace Owebia\SharedPhpConfig\Model\Wrapper;
 
 use Magento\Framework\Exception\LocalizedException;
 
-class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
+class ArrayWrapper extends AbstractWrapper implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * @param mixed $offset
@@ -54,6 +54,14 @@ class ArrayWrapper extends AbstractWrapper implements \ArrayAccess
     public function offsetUnset($offset): void
     {
         throw new LocalizedException(__("Wrapper can not be modified"));
+    }
+
+    /**
+     * @return \Traversable
+     */
+    public function getIterator(): \Traversable
+    {
+        return new \ArrayIterator($this->data);
     }
 
     /**

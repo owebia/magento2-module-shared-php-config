@@ -3,6 +3,9 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.1.4 (20 Aug, 2025)
+- fix `ArrayWrapper` class should implement `IteratorAggregate` to allow usage in `foreach`
+
 ### 6.1.3 (04 Jun, 2025)
 - fix NOT LOGGED IN customer group retrieval
 
