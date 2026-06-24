@@ -3,6 +3,10 @@
 
 Module: `owebia/magento2-module-shared-php-config`
 
+### 6.1.5 (24 Jun, 2026)
+- add support for PHP 8.5
+- update compatibility with magento 2.4.9
+
 ### 6.1.4 (20 Aug, 2025)
 - fix `ArrayWrapper` class should implement `IteratorAggregate` to allow usage in `foreach` (thanks to Yonn T.)
 
