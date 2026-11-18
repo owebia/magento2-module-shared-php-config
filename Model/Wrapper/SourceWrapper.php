@@ -77,7 +77,9 @@ class SourceWrapper extends AbstractWrapper
         if (!$source) {
             return null;
         }
-        if ($source instanceof DataObject) {
+        if ($source instanceof \stdClass) {
+            return $source->{$key} ?? null;
+        } elseif ($source instanceof DataObject) {
             return $source->getData($key);
         } elseif ($source instanceof \Magento\Framework\Api\AbstractSimpleObject) {
             $method = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));

@@ -100,7 +100,7 @@ class ParserContext implements ParserContextInterface
      */
     public function getRegistry(): RegistryInterface
     {
-        return $this->registry ??= $this->registryFactory->create();
+        return $this->registry;
     }
 
     /**

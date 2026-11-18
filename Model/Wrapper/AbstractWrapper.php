@@ -57,7 +57,7 @@ abstract class AbstractWrapper
      */
     protected function isBackendOrder(): bool
     {
-        return $this->backendAuthSession->isLoggedIn();
+        return $this->wrapperContext->getBackendAuthSession()->isLoggedIn();
     }
 
     /**

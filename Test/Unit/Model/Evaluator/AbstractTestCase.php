@@ -9,7 +9,11 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Test\Unit\Model\Evaluator;
 
+use Magento\Backend\Model\Auth\Session;
+use Magento\Framework\DataObject;
+use Magento\Framework\Escaper;
 use Magento\Framework\ObjectManagerInterface;
+use Owebia\SharedPhpConfig\Logger\ParserDebugLogger;
 use Owebia\SharedPhpConfig\Model\Evaluator;
 use Owebia\SharedPhpConfig\Model\FunctionProviderPool;
 use Owebia\SharedPhpConfig\Model\Parser;
@@ -17,15 +21,12 @@ use Owebia\SharedPhpConfig\Model\ParserContext;
 use Owebia\SharedPhpConfig\Model\Registry;
 use Owebia\SharedPhpConfig\Model\Wrapper\SourceWrapper;
 use Owebia\SharedPhpConfig\Model\WrapperContext;
+use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractTestCase extends TestCase
 {
-    /**
-     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
-     */
-    protected $objectManager;
-
     /**
      * @var string
      */
@@ -43,7 +44,6 @@ abstract class AbstractTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->init();
     }
 
@@ -52,35 +52,27 @@ abstract class AbstractTestCase extends TestCase
      */
     protected function init(): self
     {
-        $objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['create', 'get', 'configure'])
-            ->getMock();
-        $wrapperContext = $this->objectManager->getObject(WrapperContext::class, [
-            'objectManager' => $objectManager,
-        ]);
-        $objectManager->expects($this->any())
-            ->method('create')
-            ->will($this->returnCallback(function ($type, $args) use ($wrapperContext) {
-                try {
-                    $args['wrapperContext'] = $wrapperContext;
-                    $res = $this->objectManager->getObject(SourceWrapper::class, $args);
-                } catch (\Exception $e) {
-                    //echo $e->getMessage() . "\n";
-                    //echo $e->getTraceAsString();
+        $objectManager = $this->createStub(ObjectManagerInterface::class);
+        $escaper = $this->createStub(Escaper::class);
+        $wrapperContext = new WrapperContext($escaper, $objectManager, $this->createStub(Session::class));
+        $objectManager->method('create')
+            ->willReturnCallback(function ($type, $args = []) use ($wrapperContext) {
+                if ($type === DataObject::class) {
+                    return new DataObject($args['data'] ?? []);
                 }
-                return $res;
-            }));
-        $this->parserContext = $this->objectManager->getObject(ParserContext::class, [
-            'wrapperContext' => $wrapperContext,
-            'functionProviderPool' => $this->objectManager->getObject(FunctionProviderPool::class),
-            'registry' => $this->objectManager->getObject(Registry::class),
-        ]);
-        $this->parser = $this->objectManager->getObject(Parser::class, [
-            'parserContext' => $this->parserContext,
-            'evaluator' => $this->objectManager->getObject(Evaluator::class, ['wrapperContext' => $wrapperContext]),
-            'phpParserFactory' => $this->objectManager->getObject(\PhpParser\ParserFactory::class),
-        ]);
+                if ($type === SourceWrapper::class) {
+                    return new SourceWrapper($wrapperContext, $args['data'] ?? null);
+                }
+                throw new \InvalidArgumentException('Unsupported fixture type: ' . $type);
+            });
+        $this->parserContext = new ParserContext($wrapperContext, new Registry(), new FunctionProviderPool());
+        $this->parser = new Parser(
+            $escaper,
+            new Evaluator($escaper, $wrapperContext),
+            new ParserFactory(),
+            $this->createStub(ParserDebugLogger::class),
+            $this->createStub(LoggerInterface::class)
+        );
         $this->config = '';
         return $this;
     }

@@ -810,7 +810,7 @@ class Evaluator
     private function evalNodeExprFuncCall(ParserContextInterface $context, Node\Expr\FuncCall $expr)
     {
         if ($expr->name instanceof Node\Name && ($parts = $expr->name->getParts())) {
-            if (empty($parts) || count($parts) != 1) {
+            if (count($parts) != 1) {
                 return $this->error("Unsupported FuncCall expression", $expr);
             }
 
@@ -1095,7 +1095,7 @@ class Evaluator
 
             case Node\Name::class:
                 $parts = $expr->getParts();
-                if (empty($parts) || count($parts) != 1) {
+                if (count($parts) != 1) {
                     return $this->error("Unsupported Name expression", $expr);
                 }
                 return $this->debug($context, $expr, $parts[0]);

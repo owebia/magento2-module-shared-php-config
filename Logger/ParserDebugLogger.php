@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Owebia\SharedPhpConfig\Logger;
 
-use Monolog\Logger;
+use Magento\Framework\Logger\Monolog;
 
-class ParserDebugLogger extends Logger
+class ParserDebugLogger extends Monolog
 {
     /**
      * @param string $title

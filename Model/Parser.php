@@ -86,7 +86,6 @@ class Parser implements ParserInterface
 
             $phpParser = $this->phpParserFactory->createForHostVersion();
 
-            $configuration = $configuration ?? '';
             $hash = hash('md5', $configuration);
             if (!isset($this->parsingCache[$hash])) {
                 // $stmts is an array of statement nodes

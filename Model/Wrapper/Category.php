@@ -51,7 +51,7 @@ class Category extends SourceWrapper
      */
     public function load()
     {
-        $this->source = $this->categoryRepository->get($this->entity_id);
+        $this->source = $this->categoryRepository->get($this->__get('entity_id'));
         $this->cache->setData([]);
         return $this;
     }

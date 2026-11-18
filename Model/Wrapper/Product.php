@@ -71,7 +71,7 @@ class Product extends SourceWrapper
      */
     public function load()
     {
-        $this->source = $this->productRepository->getById($this->entity_id);
+        $this->source = $this->productRepository->getById($this->__get('entity_id'));
         $this->cache->setData([]);
         return $this;
     }
@@ -130,12 +130,12 @@ class Product extends SourceWrapper
             case 'attribute_set':
                 return $this->wrapperContext->create(
                     Wrapper\ProductAttributeSet::class,
-                    ['data' => ['id' => (int)$this->{'attribute_set_id'}]]
+                    ['data' => ['id' => (int)$this->__get('attribute_set_id')]]
                 );
             case 'stock_item':
                 return $this->wrapperContext->create(
                     Wrapper\ProductStockItem::class,
-                    ['data' => ['product_id' => (int)$this->{'entity_id'}]]
+                    ['data' => ['product_id' => (int)$this->__get('entity_id')]]
                 );
             case 'category_id':
                 return $this->category_ids[0] ?? null;
